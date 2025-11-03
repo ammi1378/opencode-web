@@ -79,7 +79,6 @@ export function SessionChat({
     if (lastMessage?.info.role === 'user') return
     let localContext: ISessionContext['context'] = {}
     messages?.slice(-4)?.forEach((message) => {
-      console.log({ message })
       if (message.info.role === 'assistant') {
         if (
           localContext?.mode !== message.info?.mode ||

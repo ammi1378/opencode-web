@@ -59,7 +59,7 @@ export function useSSEStream<T = any>({
     eventSourceRef.current = eventSource
 
     eventSource.onopen = () => {
-      console.log('✅ SSE Connected')
+      logger('✅ SSE Connected')
       setIsConnected(true)
       setError(null)
     }
@@ -123,8 +123,7 @@ export function useSSEStream<T = any>({
     if (batch) {
       logger('[OC_STATE]: Batch updates recieved!')
       const updateQueue = data
-      console.log({ data })
-      console.log({ updateQueue: updateQueue })
+
 
       logger({ updateQueue, data })
 
@@ -155,7 +154,6 @@ export function useSSEStream<T = any>({
       const onholdEvents: Event[] = []
       // const events = updateQueue.current
       logger('[OC_STATE]: Updates started!')
-      console.log({ events })
       events.forEach((ocEvent) => {
         if (ocEvent.type === 'message.updated') {
           queryClient.setQueryData(
@@ -172,7 +170,6 @@ export function useSSEStream<T = any>({
             },
           )
         } else if (ocEvent.type === 'message.part.updated') {
-          console.log('message.part.updated', ocEvent)
 
           queryClient.setQueryData(
             getSessionMessagesQueryKey(ocEvent.properties.part.sessionID, {}),
@@ -192,8 +189,6 @@ export function useSSEStream<T = any>({
       })
 
       logger('[OC_STATE]: Updates cleared!')
-      console.log({ onholdEvents })
-
       clear(onholdEvents)
     },
     [queryClient, clear],
