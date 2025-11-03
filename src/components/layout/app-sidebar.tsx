@@ -1,7 +1,15 @@
 'use client'
 
 import * as React from 'react'
-import { ArchiveX, Command, File, Inbox, Send, Trash2 } from 'lucide-react'
+import {
+  ArchiveX,
+  Command,
+  File,
+  FolderKanban,
+  Inbox,
+  Send,
+  Trash2,
+} from 'lucide-react'
 
 import { NavUser } from './nav-user'
 import { Label } from '@/components/ui/label'
@@ -19,9 +27,10 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 import { Switch } from '@/components/ui/switch'
-import { useMatches } from '@tanstack/react-router'
+import { Link, useMatch, useMatches, useParams } from '@tanstack/react-router'
 import type { FileRouteTypes } from '@/routeTree.gen'
 import { ServerSidebar } from './sidebars/server-sidebar'
+import { SessionSidebar } from './sidebars/session-sidebar'
 
 // This is sample data
 const data = {
@@ -154,7 +163,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const matches = useMatches()
 
   const currentMatch = matches.at(-1)
-  console.log({ currentMatch })
   const isServerAddress = (
     [
       '/servers',
@@ -163,8 +171,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       '/servers/$serverId/sessions',
     ] as FileRouteTypes['fullPaths'][]
   ).some((p) => p === currentMatch?.fullPath)
+  const isSessionAddress = useMatch({
+    from: '/servers/$serverId_/$sessionId/chat',
+    shouldThrow: false,
+  })
 
-  //  (['/servers', '/servers/$serverId'] satisfies FileRouteTypes['fullPaths'][]).includes(currentMatch?.fullPath)
   return (
     <Sidebar
       collapsible="icon"
@@ -196,6 +207,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroup>
             <SidebarGroupContent className="px-1.5 md:px-0">
               <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    tooltip={{
+                      children: 'View servers',
+                      hidden: false,
+                    }}
+                    className="px-2.5 md:px-2"
+                    asChild
+                  >
+                    <Link to="/servers">
+                      <FolderKanban />
+                      <span>Servers</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
                 {data.navMain.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
@@ -232,13 +258,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarFooter>
       </Sidebar>
 
-      {/* This is the second sidebar */}
-      {/* We disable collapsible and let it fill remaining space */}
-      {isServerAddress ? (
-        <ServerSidebar />
-      ) : (
-        ''
-      )}
+      {isServerAddress && <ServerSidebar />}
+      {isSessionAddress && <SessionSidebar />}
     </Sidebar>
   )
 }

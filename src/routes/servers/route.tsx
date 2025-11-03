@@ -5,5 +5,8 @@ export const Route = createFileRoute('/servers')({
 })
 
 function ServersPage() {
-  return <Outlet />
+
+     
+return  <Outlet />
+
 }

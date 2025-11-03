@@ -8,21 +8,31 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import type { ServerSession } from '@/lib/servers/hooks'
+import { useSessionList } from '@/lib/api/default/default'
+import type { Server } from '@/lib/servers/types'
+import { useEffect } from 'react'
 
 interface SessionListProps {
-  sessions: Array<ServerSession>
-  isLoading?: boolean
-  error?: string | null
-  serverId?: string
+  server?: Server
 }
 
-export function SessionList({
-  sessions,
-  isLoading,
-  error,
-  serverId,
-}: SessionListProps) {
+export function SessionList({ server }: SessionListProps) {
+  const {
+    data: sessions,
+    isLoading,
+    error,
+  } = useSessionList(
+    {},
+    {
+      query: {
+        enabled: !!server?.url?.length,
+      },
+      request: {
+        baseUrl: server?.url,
+      },
+    },
+  )
+
   if (isLoading) {
     return (
       <div className="grid gap-4">
@@ -44,7 +54,7 @@ export function SessionList({
     )
   }
 
-  if (error) {
+  if ((error as any)?.message) {
     return (
       <Card className="border-destructive/50">
         <CardHeader>
@@ -52,13 +62,13 @@ export function SessionList({
             <MessageSquare className="mr-2 h-5 w-5" />
             Error Loading Sessions
           </CardTitle>
-          <CardDescription>{error}</CardDescription>
+          <CardDescription>{(error as any)?.message}</CardDescription>
         </CardHeader>
       </Card>
     )
   }
 
-  if (sessions.length === 0) {
+  if (sessions?.length === 0) {
     return (
       <Card>
         <CardHeader className="text-center">
@@ -71,6 +81,8 @@ export function SessionList({
       </Card>
     )
   }
+
+  console.log({ sessions })
 
   return (
     <div className="grid gap-4">
@@ -119,10 +131,13 @@ export function SessionList({
                   </CardDescription>
                 </div>
                 <div className="flex space-x-2">
-                  {serverId && (
+                  {server && (
                     <Link
                       to="/servers/$serverId/$sessionId/chat"
-                      params={{ serverId, sessionId: session.id }}
+                      params={{
+                        serverId: server.identifier.toString(),
+                        sessionId: session.id,
+                      }}
                     >
                       <Button variant="outline" size="sm">
                         View Chat
