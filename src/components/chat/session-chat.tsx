@@ -58,13 +58,6 @@ export function SessionChat({
     },
   )
 
-  const [lastSessionContextUpdate, setLastSessionContextUpdate] = useState<
-    ISessionContext['context']
-  >({})
-  const debouncedLastSessionContextUpdate = useDebounce(
-    lastSessionContextUpdate,
-    300,
-  )
   const localUpdateContext = useCallback(
     (v: ISessionContext['context']) => {
       if (

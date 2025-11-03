@@ -6,10 +6,12 @@
  * OpenAPI spec version: 0.0.3
  */
 import type { UserMessageTime } from './userMessageTime'
+import type { UserMessageSummary } from './userMessageSummary'
 
 export interface UserMessage {
   id: string
   sessionID: string
   role: 'user'
   time: UserMessageTime
+  summary?: UserMessageSummary
 }

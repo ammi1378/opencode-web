@@ -8,7 +8,10 @@
 import type { FileContentPatch } from './fileContentPatch'
 
 export interface FileContent {
+  type: 'text'
   content: string
   diff?: string
   patch?: FileContentPatch
+  encoding?: 'base64'
+  mimeType?: string
 }

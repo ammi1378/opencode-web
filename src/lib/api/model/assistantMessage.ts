@@ -17,6 +17,7 @@ export interface AssistantMessage {
   time: AssistantMessageTime
   error?: AssistantMessageError
   system: string[]
+  parentID: string
   modelID: string
   providerID: string
   mode: string

@@ -16,4 +16,9 @@ export interface McpRemoteConfig {
   enabled?: boolean
   /** Headers to send with the request */
   headers?: McpRemoteConfigHeaders
+  /**
+   * Timeout in ms for fetching tools from the MCP server. Defaults to 5000 (5 seconds) if not specified.
+   * @maximum 9007199254740991
+   */
+  timeout?: number
 }

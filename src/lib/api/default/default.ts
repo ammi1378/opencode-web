@@ -41,6 +41,7 @@ import type {
   EventSubscribeParams,
   File,
   FileContent,
+  FileDiff,
   FileListParams,
   FileNode,
   FileReadParams,
@@ -49,6 +50,11 @@ import type {
   FindSymbolsParams,
   FindText200Item,
   FindTextParams,
+  FormatterStatus,
+  FormatterStatusParams,
+  LSPStatus,
+  LspStatusParams,
+  McpStatus200,
   McpStatusParams,
   NotFoundError,
   Path,
@@ -67,6 +73,7 @@ import type {
   SessionCreateBody,
   SessionCreateParams,
   SessionDeleteParams,
+  SessionDiffParams,
   SessionForkBody,
   SessionForkParams,
   SessionGetParams,
@@ -101,12 +108,17 @@ import type {
   TuiAppendPromptBody,
   TuiAppendPromptParams,
   TuiClearPromptParams,
+  TuiControlNext200,
+  TuiControlNextParams,
+  TuiControlResponseParams,
   TuiExecuteCommandBody,
   TuiExecuteCommandParams,
   TuiOpenHelpParams,
   TuiOpenModelsParams,
   TuiOpenSessionsParams,
   TuiOpenThemesParams,
+  TuiPublishBody,
+  TuiPublishParams,
   TuiShowToastBody,
   TuiShowToastParams,
   TuiSubmitPromptParams,
@@ -2388,6 +2400,159 @@ export const useSessionUnshare = <
 
   return useMutation(mutationOptions, queryClient)
 }
+/**
+ * Get the diff that resulted from this user message
+ */
+export const sessionDiff = (
+  id: string,
+  params?: SessionDiffParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<FileDiff[]>(
+    { url: `/session/${id}/diff`, method: 'GET', params, signal },
+    options,
+  )
+}
+
+export const getSessionDiffQueryKey = (
+  id?: string,
+  params?: SessionDiffParams,
+) => {
+  return [`/session/${id}/diff`, ...(params ? [params] : [])] as const
+}
+
+export const getSessionDiffQueryOptions = <
+  TData = Awaited<ReturnType<typeof sessionDiff>>,
+  TError = ErrorType<unknown>,
+>(
+  id: string,
+  params?: SessionDiffParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof sessionDiff>>, TError, TData>
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getSessionDiffQueryKey(id, params)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof sessionDiff>>> = ({
+    signal,
+  }) => sessionDiff(id, params, requestOptions, signal)
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof sessionDiff>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SessionDiffQueryResult = NonNullable<
+  Awaited<ReturnType<typeof sessionDiff>>
+>
+export type SessionDiffQueryError = ErrorType<unknown>
+
+export function useSessionDiff<
+  TData = Awaited<ReturnType<typeof sessionDiff>>,
+  TError = ErrorType<unknown>,
+>(
+  id: string,
+  params: undefined | SessionDiffParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof sessionDiff>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof sessionDiff>>,
+          TError,
+          Awaited<ReturnType<typeof sessionDiff>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useSessionDiff<
+  TData = Awaited<ReturnType<typeof sessionDiff>>,
+  TError = ErrorType<unknown>,
+>(
+  id: string,
+  params?: SessionDiffParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof sessionDiff>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof sessionDiff>>,
+          TError,
+          Awaited<ReturnType<typeof sessionDiff>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useSessionDiff<
+  TData = Awaited<ReturnType<typeof sessionDiff>>,
+  TError = ErrorType<unknown>,
+>(
+  id: string,
+  params?: SessionDiffParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof sessionDiff>>, TError, TData>
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+
+export function useSessionDiff<
+  TData = Awaited<ReturnType<typeof sessionDiff>>,
+  TError = ErrorType<unknown>,
+>(
+  id: string,
+  params?: SessionDiffParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof sessionDiff>>, TError, TData>
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+} {
+  const queryOptions = getSessionDiffQueryOptions(id, params, options)
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+
+  query.queryKey = queryOptions.queryKey
+
+  return query
+}
+
 /**
  * Summarize the session
  */
@@ -4878,7 +5043,7 @@ export const mcpStatus = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<unknown>(
+  return customInstance<McpStatus200>(
     { url: `/mcp`, method: 'GET', params, signal },
     options,
   )
@@ -4998,6 +5163,304 @@ export function useMcpStatus<
   queryKey: DataTag<QueryKey, TData, TError>
 } {
   const queryOptions = getMcpStatusQueryOptions(params, options)
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+
+  query.queryKey = queryOptions.queryKey
+
+  return query
+}
+
+/**
+ * Get LSP server status
+ */
+export const lspStatus = (
+  params?: LspStatusParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<LSPStatus[]>(
+    { url: `/lsp`, method: 'GET', params, signal },
+    options,
+  )
+}
+
+export const getLspStatusQueryKey = (params?: LspStatusParams) => {
+  return [`/lsp`, ...(params ? [params] : [])] as const
+}
+
+export const getLspStatusQueryOptions = <
+  TData = Awaited<ReturnType<typeof lspStatus>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: LspStatusParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof lspStatus>>, TError, TData>
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getLspStatusQueryKey(params)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof lspStatus>>> = ({
+    signal,
+  }) => lspStatus(params, requestOptions, signal)
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof lspStatus>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type LspStatusQueryResult = NonNullable<
+  Awaited<ReturnType<typeof lspStatus>>
+>
+export type LspStatusQueryError = ErrorType<unknown>
+
+export function useLspStatus<
+  TData = Awaited<ReturnType<typeof lspStatus>>,
+  TError = ErrorType<unknown>,
+>(
+  params: undefined | LspStatusParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof lspStatus>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof lspStatus>>,
+          TError,
+          Awaited<ReturnType<typeof lspStatus>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useLspStatus<
+  TData = Awaited<ReturnType<typeof lspStatus>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: LspStatusParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof lspStatus>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof lspStatus>>,
+          TError,
+          Awaited<ReturnType<typeof lspStatus>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useLspStatus<
+  TData = Awaited<ReturnType<typeof lspStatus>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: LspStatusParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof lspStatus>>, TError, TData>
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+
+export function useLspStatus<
+  TData = Awaited<ReturnType<typeof lspStatus>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: LspStatusParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof lspStatus>>, TError, TData>
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+} {
+  const queryOptions = getLspStatusQueryOptions(params, options)
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+
+  query.queryKey = queryOptions.queryKey
+
+  return query
+}
+
+/**
+ * Get formatter status
+ */
+export const formatterStatus = (
+  params?: FormatterStatusParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<FormatterStatus[]>(
+    { url: `/formatter`, method: 'GET', params, signal },
+    options,
+  )
+}
+
+export const getFormatterStatusQueryKey = (params?: FormatterStatusParams) => {
+  return [`/formatter`, ...(params ? [params] : [])] as const
+}
+
+export const getFormatterStatusQueryOptions = <
+  TData = Awaited<ReturnType<typeof formatterStatus>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: FormatterStatusParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof formatterStatus>>,
+        TError,
+        TData
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getFormatterStatusQueryKey(params)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof formatterStatus>>> = ({
+    signal,
+  }) => formatterStatus(params, requestOptions, signal)
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof formatterStatus>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type FormatterStatusQueryResult = NonNullable<
+  Awaited<ReturnType<typeof formatterStatus>>
+>
+export type FormatterStatusQueryError = ErrorType<unknown>
+
+export function useFormatterStatus<
+  TData = Awaited<ReturnType<typeof formatterStatus>>,
+  TError = ErrorType<unknown>,
+>(
+  params: undefined | FormatterStatusParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof formatterStatus>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof formatterStatus>>,
+          TError,
+          Awaited<ReturnType<typeof formatterStatus>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useFormatterStatus<
+  TData = Awaited<ReturnType<typeof formatterStatus>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: FormatterStatusParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof formatterStatus>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof formatterStatus>>,
+          TError,
+          Awaited<ReturnType<typeof formatterStatus>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useFormatterStatus<
+  TData = Awaited<ReturnType<typeof formatterStatus>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: FormatterStatusParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof formatterStatus>>,
+        TError,
+        TData
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+
+export function useFormatterStatus<
+  TData = Awaited<ReturnType<typeof formatterStatus>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: FormatterStatusParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof formatterStatus>>,
+        TError,
+        TData
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+} {
+  const queryOptions = getFormatterStatusQueryOptions(params, options)
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<
     TData,
@@ -5768,6 +6231,325 @@ export const useTuiShowToast = <
   TContext
 > => {
   const mutationOptions = getTuiShowToastMutationOptions(options)
+
+  return useMutation(mutationOptions, queryClient)
+}
+/**
+ * Publish a TUI event
+ */
+export const tuiPublish = (
+  tuiPublishBody: BodyType<TuiPublishBody>,
+  params?: TuiPublishParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<boolean>(
+    {
+      url: `/tui/publish`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: tuiPublishBody,
+      params,
+      signal,
+    },
+    options,
+  )
+}
+
+export const getTuiPublishMutationOptions = <
+  TError = ErrorType<BadRequestError>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof tuiPublish>>,
+    TError,
+    { data: BodyType<TuiPublishBody>; params?: TuiPublishParams },
+    TContext
+  >
+  request?: SecondParameter<typeof customInstance>
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof tuiPublish>>,
+  TError,
+  { data: BodyType<TuiPublishBody>; params?: TuiPublishParams },
+  TContext
+> => {
+  const mutationKey = ['tuiPublish']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof tuiPublish>>,
+    { data: BodyType<TuiPublishBody>; params?: TuiPublishParams }
+  > = (props) => {
+    const { data, params } = props ?? {}
+
+    return tuiPublish(data, params, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type TuiPublishMutationResult = NonNullable<
+  Awaited<ReturnType<typeof tuiPublish>>
+>
+export type TuiPublishMutationBody = BodyType<TuiPublishBody>
+export type TuiPublishMutationError = ErrorType<BadRequestError>
+
+export const useTuiPublish = <
+  TError = ErrorType<BadRequestError>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof tuiPublish>>,
+      TError,
+      { data: BodyType<TuiPublishBody>; params?: TuiPublishParams },
+      TContext
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof tuiPublish>>,
+  TError,
+  { data: BodyType<TuiPublishBody>; params?: TuiPublishParams },
+  TContext
+> => {
+  const mutationOptions = getTuiPublishMutationOptions(options)
+
+  return useMutation(mutationOptions, queryClient)
+}
+/**
+ * Get the next TUI request from the queue
+ */
+export const tuiControlNext = (
+  params?: TuiControlNextParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<TuiControlNext200>(
+    { url: `/tui/control/next`, method: 'GET', params, signal },
+    options,
+  )
+}
+
+export const getTuiControlNextQueryKey = (params?: TuiControlNextParams) => {
+  return [`/tui/control/next`, ...(params ? [params] : [])] as const
+}
+
+export const getTuiControlNextQueryOptions = <
+  TData = Awaited<ReturnType<typeof tuiControlNext>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: TuiControlNextParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof tuiControlNext>>, TError, TData>
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getTuiControlNextQueryKey(params)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof tuiControlNext>>> = ({
+    signal,
+  }) => tuiControlNext(params, requestOptions, signal)
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof tuiControlNext>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TuiControlNextQueryResult = NonNullable<
+  Awaited<ReturnType<typeof tuiControlNext>>
+>
+export type TuiControlNextQueryError = ErrorType<unknown>
+
+export function useTuiControlNext<
+  TData = Awaited<ReturnType<typeof tuiControlNext>>,
+  TError = ErrorType<unknown>,
+>(
+  params: undefined | TuiControlNextParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof tuiControlNext>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof tuiControlNext>>,
+          TError,
+          Awaited<ReturnType<typeof tuiControlNext>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useTuiControlNext<
+  TData = Awaited<ReturnType<typeof tuiControlNext>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: TuiControlNextParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof tuiControlNext>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof tuiControlNext>>,
+          TError,
+          Awaited<ReturnType<typeof tuiControlNext>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useTuiControlNext<
+  TData = Awaited<ReturnType<typeof tuiControlNext>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: TuiControlNextParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof tuiControlNext>>, TError, TData>
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+
+export function useTuiControlNext<
+  TData = Awaited<ReturnType<typeof tuiControlNext>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: TuiControlNextParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof tuiControlNext>>, TError, TData>
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+} {
+  const queryOptions = getTuiControlNextQueryOptions(params, options)
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+
+  query.queryKey = queryOptions.queryKey
+
+  return query
+}
+
+/**
+ * Submit a response to the TUI request queue
+ */
+export const tuiControlResponse = (
+  tuiControlResponseBody: BodyType<unknown>,
+  params?: TuiControlResponseParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<boolean>(
+    {
+      url: `/tui/control/response`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: tuiControlResponseBody,
+      params,
+      signal,
+    },
+    options,
+  )
+}
+
+export const getTuiControlResponseMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof tuiControlResponse>>,
+    TError,
+    { data: BodyType<unknown>; params?: TuiControlResponseParams },
+    TContext
+  >
+  request?: SecondParameter<typeof customInstance>
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof tuiControlResponse>>,
+  TError,
+  { data: BodyType<unknown>; params?: TuiControlResponseParams },
+  TContext
+> => {
+  const mutationKey = ['tuiControlResponse']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof tuiControlResponse>>,
+    { data: BodyType<unknown>; params?: TuiControlResponseParams }
+  > = (props) => {
+    const { data, params } = props ?? {}
+
+    return tuiControlResponse(data, params, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type TuiControlResponseMutationResult = NonNullable<
+  Awaited<ReturnType<typeof tuiControlResponse>>
+>
+export type TuiControlResponseMutationBody = BodyType<unknown>
+export type TuiControlResponseMutationError = ErrorType<unknown>
+
+export const useTuiControlResponse = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof tuiControlResponse>>,
+      TError,
+      { data: BodyType<unknown>; params?: TuiControlResponseParams },
+      TContext
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof tuiControlResponse>>,
+  TError,
+  { data: BodyType<unknown>; params?: TuiControlResponseParams },
+  TContext
+> => {
+  const mutationOptions = getTuiControlResponseMutationOptions(options)
 
   return useMutation(mutationOptions, queryClient)
 }

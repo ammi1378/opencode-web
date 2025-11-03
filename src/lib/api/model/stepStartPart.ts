@@ -11,4 +11,5 @@ export interface StepStartPart {
   sessionID: string
   messageID: string
   type: 'step-start'
+  snapshot?: string
 }

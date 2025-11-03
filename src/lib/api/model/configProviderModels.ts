@@ -10,6 +10,7 @@ import type { ConfigProviderModelsLimit } from './configProviderModelsLimit'
 import type { ConfigProviderModelsModalities } from './configProviderModelsModalities'
 import type { ConfigProviderModelsStatus } from './configProviderModelsStatus'
 import type { ConfigProviderModelsOptions } from './configProviderModelsOptions'
+import type { ConfigProviderModelsHeaders } from './configProviderModelsHeaders'
 import type { ConfigProviderModelsProvider } from './configProviderModelsProvider'
 
 export type ConfigProviderModels = {
@@ -27,6 +28,7 @@ export type ConfigProviderModels = {
     experimental?: boolean
     status?: ConfigProviderModelsStatus
     options?: ConfigProviderModelsOptions
+    headers?: ConfigProviderModelsHeaders
     provider?: ConfigProviderModelsProvider
   }
 }

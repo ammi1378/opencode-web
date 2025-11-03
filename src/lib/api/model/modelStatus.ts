@@ -12,4 +12,5 @@ export type ModelStatus = (typeof ModelStatus)[keyof typeof ModelStatus]
 export const ModelStatus = {
   alpha: 'alpha',
   beta: 'beta',
+  deprecated: 'deprecated',
 } as const

@@ -13,4 +13,5 @@ export type ConfigProviderModelsStatus =
 export const ConfigProviderModelsStatus = {
   alpha: 'alpha',
   beta: 'beta',
+  deprecated: 'deprecated',
 } as const

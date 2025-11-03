@@ -19,7 +19,7 @@ import {
   useConfigGet,
   useConfigProviders,
 } from '@/lib/api/default/default'
-import type { Agent} from '@/lib/api/model'
+import type { Agent } from '@/lib/api/model'
 
 export const Route = createFileRoute('/servers/$serverId_/$sessionId/chat')({
   component: SessionChatPage,
@@ -30,11 +30,11 @@ function SessionChatPage() {
   const { servers, isLoading: serversLoading } = useServers()
   const server = servers.find((s) => s.identifier === parseInt(serverId))
   useSSEStream({
-    endpoint: `${server?.url}/event?directory=${'/Users/ammi1378/Documents/Personal/opencode-ui'}`,
+    endpoint: `${server?.url}/event`,
     queryKey: ['activity-log'],
     maxItems: 100,
     enabled: !!server,
-    directory: '/Users/ammi1378/Documents/Personal/opencode-ui',
+    // directory: '/Users/ammi1378/Documents/Personal/opencode-ui',
   })
   const { data: config } = useConfigGet(
     {},

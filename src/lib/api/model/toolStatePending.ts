@@ -5,8 +5,10 @@
  * opencode api
  * OpenAPI spec version: 0.0.3
  */
+import type { ToolStatePendingInput } from './toolStatePendingInput'
 
-export const ToolStatePendingValue = {
-  status: 'pending',
-} as const
-export type ToolStatePending = typeof ToolStatePendingValue
+export interface ToolStatePending {
+  status: 'pending'
+  input: ToolStatePendingInput
+  raw: string
+}

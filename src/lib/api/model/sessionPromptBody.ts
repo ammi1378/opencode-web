@@ -14,6 +14,7 @@ export type SessionPromptBody = {
   messageID?: string
   model?: SessionPromptBodyModel
   agent?: string
+  noReply?: boolean
   system?: string
   tools?: SessionPromptBodyTools
   parts: SessionPromptBodyPartsItem[]

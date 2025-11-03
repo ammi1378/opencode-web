@@ -11,4 +11,6 @@ export type TuiShowToastBody = {
   title?: string
   message: string
   variant: TuiShowToastBodyVariant
+  /** Duration in milliseconds */
+  duration?: number
 }

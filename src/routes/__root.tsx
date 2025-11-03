@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
 import { AppSidebar } from '@/components/layout/app-sidebar'
-import { BreadcrumbNav } from '@/components/layout/breadcrumb-nav'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -19,10 +18,35 @@ interface MyRouterContext {
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
-    <SidebarProvider>
+    <SidebarProvider
+      style={
+        {
+          '--sidebar-width': '350px',
+          '--sidebar-total-width': '350px',
+        } as React.CSSProperties
+      }
+    >
       <AppSidebar />
+      <SidebarInset>
+        <header className="bg-background sticky top-0 flex shrink-0 items-center gap-2 border-b p-4">
+          <SidebarTrigger className="-ml-1" />
+          <Separator
+            orientation="vertical"
+            className="mr-2 data-[orientation=vertical]:h-4"
+          />
+         
+        </header>
+        <div className="flex flex-1 flex-col gap-4 p-4">
+          {Array.from({ length: 24 }).map((_, index) => (
+            <div
+              key={index}
+              className="bg-muted/50 aspect-video h-12 w-full rounded-lg"
+            />
+          ))}
+        </div>
+      </SidebarInset>
 
-      <SidebarInset className="h-screen overflow-hidden">
+      {/* <SidebarInset className="h-screen overflow-hidden">
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger />
           <Separator orientation="vertical" className="h-6" />
@@ -32,7 +56,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         <main className="flex flex-1 flex-col gap-4 p-4 grow overflow-auto">
           <Outlet />
         </main>
-      </SidebarInset>
+      </SidebarInset> */}
 
       <TanStackDevtools
         config={{

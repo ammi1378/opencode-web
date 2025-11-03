@@ -9,5 +9,7 @@ import type { ConfigExperimentalHook } from './configExperimentalHook'
 
 export type ConfigExperimental = {
   hook?: ConfigExperimentalHook
+  /** Number of retries for chat completions on failure */
+  chatMaxRetries?: number
   disable_paste_summary?: boolean
 }

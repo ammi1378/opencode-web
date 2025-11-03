@@ -16,4 +16,9 @@ export interface McpLocalConfig {
   environment?: McpLocalConfigEnvironment
   /** Enable or disable the MCP server on startup */
   enabled?: boolean
+  /**
+   * Timeout in ms for fetching tools from the MCP server. Defaults to 5000 (5 seconds) if not specified.
+   * @maximum 9007199254740991
+   */
+  timeout?: number
 }

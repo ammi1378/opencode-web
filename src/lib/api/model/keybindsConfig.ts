@@ -12,20 +12,16 @@
 export interface KeybindsConfig {
   /** Leader key for keybind combinations */
   leader?: string
-  /** Show help dialog */
-  app_help?: string
   /** Exit the application */
   app_exit?: string
   /** Open external editor */
   editor_open?: string
   /** List available themes */
   theme_list?: string
-  /** Create/update AGENTS.md */
-  project_init?: string
-  /** Toggle tool details */
-  tool_details?: string
-  /** Toggle thinking blocks */
-  thinking_blocks?: string
+  /** Toggle sidebar */
+  sidebar_toggle?: string
+  /** View status */
+  status_view?: string
   /** Export session to editor */
   session_export?: string
   /** Create a new session */
@@ -42,10 +38,6 @@ export interface KeybindsConfig {
   session_interrupt?: string
   /** Compact the session */
   session_compact?: string
-  /** Cycle to next child session */
-  session_child_cycle?: string
-  /** Cycle to previous child session */
-  session_child_cycle_reverse?: string
   /** Scroll messages up by one page */
   messages_page_up?: string
   /** Scroll messages down by one page */
@@ -64,12 +56,16 @@ export interface KeybindsConfig {
   messages_undo?: string
   /** Redo message */
   messages_redo?: string
+  /** Toggle code block concealment in messages */
+  messages_toggle_conceal?: string
   /** List available models */
   model_list?: string
-  /** Next recent model */
+  /** Next recently used model */
   model_cycle_recent?: string
-  /** Previous recent model */
+  /** Previous recently used model */
   model_cycle_recent_reverse?: string
+  /** List available commands */
+  command_list?: string
   /** List agents */
   agent_list?: string
   /** Next agent */
@@ -78,34 +74,16 @@ export interface KeybindsConfig {
   agent_cycle_reverse?: string
   /** Clear input field */
   input_clear?: string
+  /** Forward delete */
+  input_forward_delete?: string
   /** Paste from clipboard */
   input_paste?: string
   /** Submit input */
   input_submit?: string
   /** Insert newline in input */
   input_newline?: string
-  /** @deprecated use agent_cycle. Next mode */
-  switch_mode?: string
-  /** @deprecated use agent_cycle_reverse. Previous mode */
-  switch_mode_reverse?: string
-  /** @deprecated use agent_cycle. Next agent */
-  switch_agent?: string
-  /** @deprecated use agent_cycle_reverse. Previous agent */
-  switch_agent_reverse?: string
-  /** @deprecated Currently not available. List files */
-  file_list?: string
-  /** @deprecated Close file */
-  file_close?: string
-  /** @deprecated Search file */
-  file_search?: string
-  /** @deprecated Split/unified diff */
-  file_diff_toggle?: string
-  /** @deprecated Navigate to previous message */
-  messages_previous?: string
-  /** @deprecated Navigate to next message */
-  messages_next?: string
-  /** @deprecated Toggle layout */
-  messages_layout_toggle?: string
-  /** @deprecated use messages_undo. Revert message */
-  messages_revert?: string
+  /** Previous history item */
+  history_previous?: string
+  /** Previous history item */
+  history_next?: string
 }

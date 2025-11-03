@@ -173,8 +173,9 @@ export function TaskToolPart({ part }: { part: ITaskToolPart }) {
   const server = useContext(ServerContext)
 
   const childSessionTask =
-    part.state.status === 'completed' &&
-    part.state.metadata?.summary.find((i) => i.sessionID)?.sessionID
+    (part.state.status === 'completed' || part.state.status === 'running') &&
+    (part.state.metadata.sessionId ||
+      part.state?.metadata?.summary?.find((i) => i.sessionID)?.sessionID)
 
   return (
     <div className="relative">
@@ -198,7 +199,8 @@ export function TaskToolPart({ part }: { part: ITaskToolPart }) {
         ''
       )}
 
-      {part.state.status === 'completed' && part.state.metadata.summary?.length
+      {(part.state.status === 'completed' || part.state.status === 'running') &&
+      part.state.metadata.summary?.length
         ? part.state.metadata.summary.map((taskStateSummary) => {
             return (
               <InlineToolPart

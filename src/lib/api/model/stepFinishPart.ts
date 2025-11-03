@@ -12,6 +12,8 @@ export interface StepFinishPart {
   sessionID: string
   messageID: string
   type: 'step-finish'
+  reason: string
+  snapshot?: string
   cost: number
   tokens: StepFinishPartTokens
 }

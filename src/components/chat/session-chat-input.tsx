@@ -88,6 +88,7 @@ export const SessionChatInput = ({ sessionId }: { sessionId: string }) => {
           providerID: sessionContext?.providerID!,
           modelID: sessionContext?.modelID!,
         },
+        system: 'you are fodgather ai tool. the best mafia ai.'
       },
       id: session.id,
       params: { directory: session.directory },

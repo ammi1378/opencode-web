@@ -14,6 +14,7 @@ import type { StepFinishPart } from './stepFinishPart'
 import type { SnapshotPart } from './snapshotPart'
 import type { PatchPart } from './patchPart'
 import type { AgentPart } from './agentPart'
+import type { RetryPart } from './retryPart'
 
 export type Part =
   | TextPart
@@ -25,3 +26,4 @@ export type Part =
   | SnapshotPart
   | PatchPart
   | AgentPart
+  | RetryPart

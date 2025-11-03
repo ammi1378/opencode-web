@@ -7,6 +7,7 @@
  */
 import type { EventInstallationUpdated } from './eventInstallationUpdated'
 import type { EventLspClientDiagnostics } from './eventLspClientDiagnostics'
+import type { EventLspUpdated } from './eventLspUpdated'
 import type { EventMessageUpdated } from './eventMessageUpdated'
 import type { EventMessageRemoved } from './eventMessageRemoved'
 import type { EventMessagePartUpdated } from './eventMessagePartUpdated'
@@ -17,16 +18,21 @@ import type { EventPermissionReplied } from './eventPermissionReplied'
 import type { EventFileEdited } from './eventFileEdited'
 import type { EventFileWatcherUpdated } from './eventFileWatcherUpdated'
 import type { EventTodoUpdated } from './eventTodoUpdated'
+import type { EventCommandExecuted } from './eventCommandExecuted'
 import type { EventSessionIdle } from './eventSessionIdle'
+import type { EventSessionCreated } from './eventSessionCreated'
 import type { EventSessionUpdated } from './eventSessionUpdated'
 import type { EventSessionDeleted } from './eventSessionDeleted'
 import type { EventSessionError } from './eventSessionError'
+import type { EventTuiPromptAppend } from './eventTuiPromptAppend'
+import type { EventTuiCommandExecute } from './eventTuiCommandExecute'
+import type { EventTuiToastShow } from './eventTuiToastShow'
 import type { EventServerConnected } from './eventServerConnected'
-import type { EventIdeInstalled } from './eventIdeInstalled'
 
 export type Event =
   | EventInstallationUpdated
   | EventLspClientDiagnostics
+  | EventLspUpdated
   | EventMessageUpdated
   | EventMessageRemoved
   | EventMessagePartUpdated
@@ -37,9 +43,13 @@ export type Event =
   | EventFileEdited
   | EventFileWatcherUpdated
   | EventTodoUpdated
+  | EventCommandExecuted
   | EventSessionIdle
+  | EventSessionCreated
   | EventSessionUpdated
   | EventSessionDeleted
   | EventSessionError
+  | EventTuiPromptAppend
+  | EventTuiCommandExecute
+  | EventTuiToastShow
   | EventServerConnected
-  | EventIdeInstalled

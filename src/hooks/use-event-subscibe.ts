@@ -33,7 +33,6 @@ const logger = (msg: any) => {
 
 export function useSSEStream<T = any>({
   endpoint,
-  directory,
   maxItems = 100,
   enabled = true,
 }: UseSSEStreamOptions): UseSSEStreamReturn {
@@ -41,7 +40,7 @@ export function useSSEStream<T = any>({
   const eventSourceRef = useRef<EventSource | null>(null)
   const [isConnected, setIsConnected] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const queryKey = getEventSubscribeQueryKey({ directory })
+  const queryKey = getEventSubscribeQueryKey({ })
 
   const { data = [] } = useQuery<Event[]>({
     queryKey,

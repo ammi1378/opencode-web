@@ -10,6 +10,7 @@ import type { ModelLimit } from './modelLimit'
 import type { ModelModalities } from './modelModalities'
 import type { ModelStatus } from './modelStatus'
 import type { ModelOptions } from './modelOptions'
+import type { ModelHeaders } from './modelHeaders'
 import type { ModelProvider } from './modelProvider'
 
 export interface Model {
@@ -26,5 +27,6 @@ export interface Model {
   experimental?: boolean
   status?: ModelStatus
   options: ModelOptions
+  headers?: ModelHeaders
   provider?: ModelProvider
 }

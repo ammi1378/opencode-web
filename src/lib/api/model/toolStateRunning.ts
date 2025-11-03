@@ -5,12 +5,13 @@
  * opencode api
  * OpenAPI spec version: 0.0.3
  */
+import type { ToolStateRunningInput } from './toolStateRunningInput'
 import type { ToolStateRunningMetadata } from './toolStateRunningMetadata'
 import type { ToolStateRunningTime } from './toolStateRunningTime'
 
 export interface ToolStateRunning {
   status: 'running'
-  input: unknown
+  input: ToolStateRunningInput
   title?: string
   metadata?: ToolStateRunningMetadata
   time: ToolStateRunningTime

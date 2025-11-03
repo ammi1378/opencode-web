@@ -9,4 +9,5 @@ import type { Part } from './part'
 
 export type EventMessagePartUpdatedProperties = {
   part: Part
+  delta?: string
 }

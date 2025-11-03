@@ -15,6 +15,14 @@ interface ReadToolStateCompleted extends ToolStateCompleted {
 interface TaskToolStateCompleted extends ToolStateCompleted {
   metadata: {
     summary: ToolPart[]
+    sessionId?: string
+  }
+}
+
+interface TaskToolStateRunning extends ToolStateRunning {
+  metadata: {
+    summary: ToolPart[]
+    sessionId?: string
   }
 }
 
@@ -76,10 +84,10 @@ interface IReadToolPart extends ToolPart {
     | ReadToolStateCompleted
     | ToolStateError
 }
-export interface ITaskToolPart extends ToolPart {
+export interface ITaskToolPart extends Omit<ToolPart, 'state'> {
   state:
     | ToolStatePending
-    | ToolStateRunning
+    | TaskToolStateRunning
     | TaskToolStateCompleted
     | ToolStateError
 }

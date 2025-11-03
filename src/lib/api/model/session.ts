@@ -5,6 +5,7 @@
  * opencode api
  * OpenAPI spec version: 0.0.3
  */
+import type { SessionSummary } from './sessionSummary'
 import type { SessionShare } from './sessionShare'
 import type { SessionTime } from './sessionTime'
 import type { SessionRevert } from './sessionRevert'
@@ -16,6 +17,7 @@ export interface Session {
   directory: string
   /** @pattern ^ses.* */
   parentID?: string
+  summary?: SessionSummary
   share?: SessionShare
   title: string
   version: string

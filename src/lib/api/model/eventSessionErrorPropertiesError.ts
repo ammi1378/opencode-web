@@ -9,9 +9,11 @@ import type { ProviderAuthError } from './providerAuthError'
 import type { UnknownError } from './unknownError'
 import type { MessageOutputLengthError } from './messageOutputLengthError'
 import type { MessageAbortedError } from './messageAbortedError'
+import type { APIError } from './aPIError'
 
 export type EventSessionErrorPropertiesError =
   | ProviderAuthError
   | UnknownError
   | MessageOutputLengthError
   | MessageAbortedError
+  | APIError
