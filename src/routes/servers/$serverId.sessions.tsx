@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { RefreshCw } from 'lucide-react'
+import { useContext } from 'react'
 import { Button } from '@/components/ui/button'
 import { SessionList } from '@/components/sessions/session-list'
-import { useContext } from 'react'
 import { ServerContext } from '@/hooks/context/server-context'
 
 export const Route = createFileRoute('/servers/$serverId/sessions')({

@@ -12,6 +12,6 @@ export type FileContentPatch = {
   newFileName: string
   oldHeader?: string
   newHeader?: string
-  hunks: FileContentPatchHunksItem[]
+  hunks: Array<FileContentPatchHunksItem>
   index?: string
 }

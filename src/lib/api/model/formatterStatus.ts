@@ -8,6 +8,6 @@
 
 export interface FormatterStatus {
   name: string
-  extensions: string[]
+  extensions: Array<string>
   enabled: boolean
 }

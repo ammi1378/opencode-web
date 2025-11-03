@@ -2,8 +2,11 @@ import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
+import {  useQueryClient } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
-import { useQueryClient, type QueryClient } from '@tanstack/react-query'
+import type {QueryClient} from '@tanstack/react-query';
+import type { Server } from '@/lib/servers/types'
 import {
   SidebarInset,
   SidebarProvider,
@@ -12,8 +15,6 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { AppSidebar } from '@/components/layout/app-sidebar'
 import { ServerContext } from '@/hooks/context/server-context'
-import { useEffect, useState } from 'react'
-import type { Server } from '@/lib/servers/types'
 import { useServers } from '@/lib/servers/hooks'
 
 interface MyRouterContext {

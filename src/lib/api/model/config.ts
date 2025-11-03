@@ -32,7 +32,7 @@ export interface Config {
   /** Command configuration, see https://opencode.ai/docs/commands */
   command?: ConfigCommand
   watcher?: ConfigWatcher
-  plugin?: string[]
+  plugin?: Array<string>
   snapshot?: boolean
   /** Control sharing behavior:'manual' allows manual sharing via commands, 'auto' enables automatic sharing, 'disabled' disables all sharing */
   share?: ConfigShare
@@ -41,7 +41,7 @@ export interface Config {
   /** Automatically update to the latest version */
   autoupdate?: boolean
   /** Disable providers that are loaded automatically */
-  disabled_providers?: string[]
+  disabled_providers?: Array<string>
   /** Model to use in the format of provider/model, eg anthropic/claude-2 */
   model?: string
   /** Small model to use for tasks like title generation in the format of provider/model */
@@ -59,7 +59,7 @@ export interface Config {
   formatter?: ConfigFormatter
   lsp?: ConfigLsp
   /** Additional instruction files or patterns to include */
-  instructions?: string[]
+  instructions?: Array<string>
   layout?: LayoutConfig
   permission?: ConfigPermission
   tools?: ConfigTools

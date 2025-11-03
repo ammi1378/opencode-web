@@ -12,5 +12,5 @@ export interface PatchPart {
   messageID: string
   type: 'patch'
   hash: string
-  files: string[]
+  files: Array<string>
 }

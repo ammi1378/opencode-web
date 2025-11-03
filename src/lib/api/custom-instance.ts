@@ -1,4 +1,5 @@
-import Axios, { type AxiosRequestConfig } from 'axios'
+import Axios from 'axios'
+import type {AxiosRequestConfig} from 'axios';
 
 export const AXIOS_INSTANCE = Axios.create({
   timeout: 30000,

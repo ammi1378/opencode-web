@@ -11,7 +11,7 @@
  */
 export type LayoutConfig = (typeof LayoutConfig)[keyof typeof LayoutConfig]
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
+ 
 export const LayoutConfig = {
   auto: 'auto',
   stretch: 'stretch',

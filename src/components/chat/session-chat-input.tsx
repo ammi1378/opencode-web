@@ -1,16 +1,11 @@
-import {
-  ChatInput,
-  ChatInputEditor,
-  ChatInputGroupAddon,
-  ChatInputMention,
-  ChatInputSubmitButton,
-  createMentionConfig,
-  useChatInput,
-  type ChatInputEditorRef,
-} from '@/components/ui/chat-input'
-import { ServerContext } from '@/hooks/context/server-context'
-import { useSessionGet, useSessionPrompt } from '@/lib/api/default/default'
 import { useCallback, useContext, useRef, useState } from 'react'
+import {
+  BotIcon,
+  CheckIcon,
+  ChevronsUpDownIcon,
+  FactoryIcon,
+  MoreHorizontalIcon,
+} from 'lucide-react'
 import { ButtonGroup } from '../ui/button-group'
 import { Button } from '../ui/button'
 import {
@@ -20,15 +15,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
-import {
-  MoreHorizontalIcon,
-  BotIcon,
-  ChevronsUpDownIcon,
-  CheckIcon,
-  FactoryIcon,
-} from 'lucide-react'
-import { SessionContext } from '@/hooks/context/session-context'
-import { Popover, PopoverTrigger, PopoverContent } from '../ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import {
   Command,
   CommandEmpty,
@@ -37,27 +24,56 @@ import {
   CommandItem,
   CommandList,
 } from '../ui/command'
+import type {ChatInputEditorRef} from '@/components/ui/chat-input';
+import {
+  ChatInput,
+  ChatInputEditor,
+  
+  ChatInputGroupAddon,
+  ChatInputMention,
+  ChatInputSubmitButton,
+  createMentionConfig,
+  useChatInput
+} from '@/components/ui/chat-input'
+import { ServerContext } from '@/hooks/context/server-context'
+import {
+  useSessionCreate,
+  useSessionGet,
+  useSessionPrompt,
+} from '@/lib/api/default/default'
+import { SessionContext } from '@/hooks/context/session-context'
 import { cn } from '@/lib/utils'
 
 type Member = { id: string; name: string; avatar?: string }
-const members: Member[] = [
+const members: Array<Member> = [
   { id: '1', name: 'Alice', avatar: '/alice.jpg' },
   { id: '2', name: 'Bob' },
 ]
 
-export const SessionChatInput = ({ sessionId }: { sessionId: string }) => {
+export const SessionChatInput = ({ sessionId }: { sessionId?: string }) => {
   const editorRef = useRef<ChatInputEditorRef>(null)
   const { context: sessionContext, updateContext } = useContext(SessionContext)
-  const server = useContext(ServerContext)
+  const { selectedServer: server } = useContext(ServerContext)
   const { data: session } = useSessionGet(
-    sessionId,
+    sessionId!,
     {},
-    { query: { enabled: !!server?.url }, request: { baseUrl: server?.url } },
+    {
+      query: { enabled: !!server?.url && !!sessionId?.length },
+      request: { baseUrl: server?.url },
+    },
   )
   const { mutate, isPending } = useSessionPrompt({
     mutation: {},
     request: { baseURL: server?.url },
   })
+
+  // const {
+  //   mutateAsync: mutateCreateSessionAsync,
+  //   isPending: isCreateSessionPending,
+  // } = useSessionCreate({
+  //   mutation: {},
+  //   request: { baseURL: server?.url },
+  // })
   const {
     value: message,
     onChange,
@@ -88,7 +104,7 @@ export const SessionChatInput = ({ sessionId }: { sessionId: string }) => {
           providerID: sessionContext?.providerID!,
           modelID: sessionContext?.modelID!,
         },
-        system: 'you are fodgather ai tool. the best mafia ai.'
+        system: 'you are fodgather ai tool. the best mafia ai.',
       },
       id: session.id,
       params: { directory: session.directory },
@@ -155,7 +171,7 @@ export const SessionChatInput = ({ sessionId }: { sessionId: string }) => {
                     return (
                       <DropdownMenuRadioItem value={agent.name}>
                         {typeof agent.name === 'string' &&
-                          (agent.name as string)}
+                          (agent.name)}
                       </DropdownMenuRadioItem>
                     )
                   })}

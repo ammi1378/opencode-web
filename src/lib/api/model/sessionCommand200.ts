@@ -10,5 +10,5 @@ import type { Part } from './part'
 
 export type SessionCommand200 = {
   info: AssistantMessage
-  parts: Part[]
+  parts: Array<Part>
 }

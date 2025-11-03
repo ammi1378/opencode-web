@@ -10,5 +10,5 @@ import type { Part } from './part'
 
 export type SessionMessage200 = {
   info: Message
-  parts: Part[]
+  parts: Array<Part>
 }

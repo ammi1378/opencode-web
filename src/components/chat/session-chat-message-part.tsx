@@ -1,8 +1,8 @@
-import type { Part } from '@/lib/api/model'
 import { TextPart } from './parts/text-part'
 import { FilePart } from './parts/file-part'
 import { ToolPart } from './parts/tool-part'
 import { PatchPart } from './parts/patch-part'
+import type { Part } from '@/lib/api/model'
 
 interface SessionChatMessagePartProps {
   part: Part

@@ -3,26 +3,28 @@
 import { Extension } from '@tiptap/core'
 import { Mention as MentionExtension } from '@tiptap/extension-mention'
 import Placeholder from '@tiptap/extension-placeholder'
-import type { Editor, Extensions, JSONContent } from '@tiptap/react'
 import { EditorContent, ReactRenderer, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import type { SuggestionProps } from '@tiptap/suggestion'
 import { ArrowUpIcon, Loader2 } from 'lucide-react'
 
 import {
-  type ComponentProps,
+  
+  
   createContext,
   forwardRef,
-  type ReactNode,
   useCallback,
   useContext,
   useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
-  useState,
+  useState
 } from 'react'
-import tippy, { type Instance } from 'tippy.js'
+import tippy from 'tippy.js'
+import type {ComponentProps, ReactNode} from 'react';
+import type {Instance} from 'tippy.js';
+import type { SuggestionProps } from '@tiptap/suggestion'
+import type { Editor, Extensions, JSONContent } from '@tiptap/react'
 import { Button } from '@/components/ui/button'
 import {
   InputGroup,
@@ -42,7 +44,7 @@ export type BaseMentionItem = {
 type MentionConfig<T extends BaseMentionItem = BaseMentionItem> = {
   type: string
   trigger: string // e.g., '@' or '/'
-  items: T[]
+  items: Array<T>
   renderItem?: (item: T, isSelected: boolean) => ReactNode
   editorMentionClass?: string
 }
@@ -55,7 +57,7 @@ export function createMentionConfig<T extends BaseMentionItem>(
 
 type ChatInputContextType = {
   // biome-ignore lint/suspicious/noExplicitAny: Needs to accept configs with different item types
-  mentionConfigs: MentionConfig<any>[]
+  mentionConfigs: Array<MentionConfig<any>>
   // biome-ignore lint/suspicious/noExplicitAny: Needs to accept configs with different item types
   addMentionConfig: (config: MentionConfig<any>) => void
   onSubmit: () => void
@@ -95,7 +97,7 @@ export function ChatInput({
   value?: ChatInputValue
   onChange?: (value: ChatInputValue) => void
 }) {
-  const [mentionConfigs, setMentionConfigs] = useState<MentionConfig<any>[]>([])
+  const [mentionConfigs, setMentionConfigs] = useState<Array<MentionConfig<any>>>([])
 
   const registeredTypesRef = useRef(new Set<string>())
 
@@ -312,7 +314,7 @@ export type ChatInputMentionProps<T extends BaseMentionItem = BaseMentionItem> =
   {
     type: string
     trigger: string
-    items: T[]
+    items: Array<T>
     children?: (item: T, isSelected: boolean) => ReactNode
     editorMentionClass?: string
   }
@@ -345,7 +347,7 @@ export function ChatInputMention<T extends BaseMentionItem = BaseMentionItem>({
 }
 
 interface GenericMentionListProps<T extends BaseMentionItem> {
-  items: T[]
+  items: Array<T>
   command: (item: { id: string; label: string }) => void
   renderItem?: (item: T, isSelected: boolean) => ReactNode
 }
@@ -361,7 +363,7 @@ const GenericMentionList = forwardRef(
   ) => {
     const { items, command, renderItem } = props
     const [selectedIndex, setSelectedIndex] = useState(0)
-    const itemRefs = useRef<(HTMLButtonElement | null)[]>([])
+    const itemRefs = useRef<Array<HTMLButtonElement | null>>([])
 
     const selectItem = useCallback(
       (index: number) => {
@@ -658,7 +660,7 @@ type MentionConfigsObject = Record<string, MentionConfig<any>>
 type ParsedFromObject<T extends MentionConfigsObject> = {
   content: string
 } & {
-  [K in keyof T]?: T[K] extends MentionConfig<infer Item> ? Item[] : never
+  [K in keyof T]?: T[K] extends MentionConfig<infer Item> ? Array<Item> : never
 }
 
 type ParsedContentOnly = {
@@ -748,22 +750,22 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   : never
 
 type ConfigToField<Config extends MentionConfig<any>> =
-  Config extends MentionConfig<infer T> ? { [K in Config['type']]: T[] } : never
+  Config extends MentionConfig<infer T> ? { [K in Config['type']]: Array<T> } : never
 
 export type ParsedChatInputValue<
-  Configs extends readonly MentionConfig<any>[],
+  Configs extends ReadonlyArray<MentionConfig<any>>,
 > = { content: string } & Partial<
   UnionToIntersection<
     { [I in keyof Configs]: ConfigToField<Configs[I]> }[number]
   >
 >
 
-export function parseContent<Configs extends readonly MentionConfig<any>[]>(
+export function parseContent<Configs extends ReadonlyArray<MentionConfig<any>>>(
   json: JSONContent,
   configs: Configs,
 ): ParsedChatInputValue<Configs> {
   let content = ''
-  const mentions: Record<string, any[]> = {}
+  const mentions: Record<string, Array<any>> = {}
 
   function recurse(node: JSONContent) {
     if (node.type === 'text' && node.text) {
@@ -776,7 +778,7 @@ export function parseContent<Configs extends readonly MentionConfig<any>[]>(
       if (config) {
         const attrs = node.attrs ?? {}
         const id = attrs.id as string
-        //const type = attrs.type as string;
+        // const type = attrs.type as string;
         const label = attrs.label as string
         content += `<span class="mention mention-${mentionType}" data-type="${mentionType}" data-id="${id}" data-name="${label}" >${config.trigger}${label}</span>`
 

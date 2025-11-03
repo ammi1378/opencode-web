@@ -11,7 +11,11 @@ import {
   Trash2,
 } from 'lucide-react'
 
+import { Link, useMatch, useMatches } from '@tanstack/react-router'
 import { NavUser } from './nav-user'
+import { ServerSidebar } from './sidebars/server-sidebar'
+import { SessionSidebar } from './sidebars/session-sidebar'
+import type { FileRouteTypes } from '@/routeTree.gen'
 import { Label } from '@/components/ui/label'
 import {
   Sidebar,
@@ -20,19 +24,12 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
-  SidebarInput,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import { Switch } from '@/components/ui/switch'
-import { Link, useMatch, useMatches, useParams } from '@tanstack/react-router'
-import type { FileRouteTypes } from '@/routeTree.gen'
-import { ServerSidebar } from './sidebars/server-sidebar'
-import { SessionSidebar } from './sidebars/session-sidebar'
 
-// This is sample data
 const data = {
   user: {
     name: 'shadcn',
@@ -169,10 +166,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       '/servers/$serverId',
       '/servers/',
       '/servers/$serverId/sessions',
-    ] as FileRouteTypes['fullPaths'][]
+    ] as Array<FileRouteTypes['fullPaths']>
   ).some((p) => p === currentMatch?.fullPath)
   const isSessionAddress = useMatch({
-    from: '/servers/$serverId_/$sessionId/chat',
+    from: '/servers/$serverId_/chat/$sessionId',
     shouldThrow: false,
   })
 

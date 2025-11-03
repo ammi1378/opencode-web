@@ -8,6 +8,6 @@
 import type { ConfigExperimentalHookFileEditedItemEnvironment } from './configExperimentalHookFileEditedItemEnvironment'
 
 export type ConfigExperimentalHookFileEditedItem = {
-  command: string[]
+  command: Array<string>
   environment?: ConfigExperimentalHookFileEditedItemEnvironment
 }

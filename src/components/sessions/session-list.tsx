@@ -1,5 +1,7 @@
 import { Clock, ExternalLink, Folder, MessageSquare } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
+import { useEffect } from 'react'
+import type { Server } from '@/lib/servers/types'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -9,8 +11,6 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { useSessionList } from '@/lib/api/default/default'
-import type { Server } from '@/lib/servers/types'
-import { useEffect } from 'react'
 
 interface SessionListProps {
   server?: Server

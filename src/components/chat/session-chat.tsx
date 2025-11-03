@@ -1,6 +1,15 @@
-import { useSessionGet, useSessionMessages } from '@/lib/api/default/default'
-import type { Server } from '@/lib/servers/types'
 import { MessageSquare } from 'lucide-react'
+import { useCallback, useContext, useEffect, useState } from 'react'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '../ui/accordion'
+import { SessionChatMessage } from './session-chat-message'
+import type { Server } from '@/lib/servers/types'
+import type {ISessionContext} from '@/hooks/context/session-context';
+import { useSessionGet, useSessionMessages } from '@/lib/api/default/default'
 import {
   Card,
   CardContent,
@@ -9,51 +18,47 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '../ui/accordion'
-import { useCallback, useContext, useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
-import { SessionChatMessage } from './session-chat-message'
 import { ServerContext } from '@/hooks/context/server-context'
 import {
-  SessionContext,
-  type ISessionContext,
+  
+  SessionContext
 } from '@/hooks/context/session-context'
-import { useDebounce } from '@/hooks/use-debounce'
 
 interface SessionChatProps {
-  sessionId: string
+  sessionId?: string
   server: Server | undefined
   defaultOpen?: boolean
   hideAccordionUi?: boolean
 }
 
 export function SessionChat({
-  // server,
   sessionId,
   defaultOpen,
   hideAccordionUi,
 }: SessionChatProps) {
-  const server = useContext(ServerContext)
+  const { selectedServer: server } = useContext(ServerContext)
   const { context: sessionContext, updateContext } = useContext(SessionContext)
   const { data: session } = useSessionGet(
-    sessionId,
+    sessionId!,
     {},
-    { query: { enabled: !!server?.url }, request: { baseUrl: server?.url } },
+    {
+      query: { enabled: !!server?.url && !!sessionId?.length },
+      request: { baseUrl: server?.url },
+    },
   )
   const {
     data: messages,
     isLoading,
     error,
   } = useSessionMessages(
-    sessionId,
+    sessionId!,
     {},
     {
-      query: { enabled: !!server?.url, refetchOnWindowFocus: false },
+      query: {
+        enabled: !!server?.url && !!sessionId?.length,
+        refetchOnWindowFocus: false,
+      },
       request: { baseUrl: server?.url },
     },
   )
@@ -70,9 +75,6 @@ export function SessionChat({
     },
     [sessionContext],
   )
-  // useEffect(() => {
-  //   sessionContext.updateContext(debouncedLastSessionContextUpdate)
-  // }, [debouncedLastSessionContextUpdate])
 
   useEffect(() => {
     const lastMessage = messages?.at(-1)

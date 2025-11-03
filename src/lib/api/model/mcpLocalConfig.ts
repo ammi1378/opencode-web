@@ -11,7 +11,7 @@ export interface McpLocalConfig {
   /** Type of MCP server connection */
   type: 'local'
   /** Command and arguments to run the MCP server */
-  command: string[]
+  command: Array<string>
   /** Environment variables to set when running the MCP server */
   environment?: McpLocalConfigEnvironment
   /** Enable or disable the MCP server on startup */

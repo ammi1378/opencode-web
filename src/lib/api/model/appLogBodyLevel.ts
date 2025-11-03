@@ -12,7 +12,7 @@
 export type AppLogBodyLevel =
   (typeof AppLogBodyLevel)[keyof typeof AppLogBodyLevel]
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
+ 
 export const AppLogBodyLevel = {
   debug: 'debug',
   info: 'info',

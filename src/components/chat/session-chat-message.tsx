@@ -1,5 +1,7 @@
-import type { Server } from '@/lib/servers/types'
 import { MessageSquare } from 'lucide-react'
+import { SessionChatMessagePart } from './session-chat-message-part'
+import type { Server } from '@/lib/servers/types'
+import type { SessionMessage200 } from '@/lib/api/model'
 import {
   Card,
   CardContent,
@@ -7,8 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import type { SessionMessage200 } from '@/lib/api/model'
-import { SessionChatMessagePart } from './session-chat-message-part'
 
 interface SessionChatMessageProps {
   message: SessionMessage200

@@ -14,14 +14,14 @@ interface ReadToolStateCompleted extends ToolStateCompleted {
 
 interface TaskToolStateCompleted extends ToolStateCompleted {
   metadata: {
-    summary: ToolPart[]
+    summary: Array<ToolPart>
     sessionId?: string
   }
 }
 
 interface TaskToolStateRunning extends ToolStateRunning {
   metadata: {
-    summary: ToolPart[]
+    summary: Array<ToolPart>
     sessionId?: string
   }
 }

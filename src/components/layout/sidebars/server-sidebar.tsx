@@ -11,6 +11,8 @@ import {
   Trash2,
 } from 'lucide-react'
 
+import { Link, useMatch, useMatches } from '@tanstack/react-router'
+import type { FileRouteTypes } from '@/routeTree.gen'
 import { Label } from '@/components/ui/label'
 import {
   Sidebar,
@@ -30,8 +32,6 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 import { Switch } from '@/components/ui/switch'
-import { Link, useMatch, useMatches } from '@tanstack/react-router'
-import type { FileRouteTypes } from '@/routeTree.gen'
 import { useServers } from '@/lib/servers/hooks'
 import {
   Collapsible,
@@ -44,7 +44,10 @@ export function ServerSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const match = useMatch({ from: '/servers/$serverId', shouldThrow: false })
-  const matchIsSessionsPage = useMatch({ from: '/servers/$serverId/sessions', shouldThrow: false })
+  const matchIsSessionsPage = useMatch({
+    from: '/servers/$serverId/sessions',
+    shouldThrow: false,
+  })
 
   console.log({ match })
   //  (['/servers', '/servers/$serverId'] satisfies FileRouteTypes['fullPaths'][]).includes(currentMatch?.fullPath)
@@ -94,7 +97,10 @@ export function ServerSidebar({
                   <CollapsibleContent>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={!!matchIsSessionsPage}>
+                        <SidebarMenuSubButton
+                          asChild
+                          isActive={!!matchIsSessionsPage}
+                        >
                           <Link
                             to="/servers/$serverId/sessions"
                             params={{ serverId: server.identifier.toString() }}

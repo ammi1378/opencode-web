@@ -1,5 +1,5 @@
-import type { TextPart } from '@/lib/api/model'
 import Markdown from 'react-markdown'
+import type { TextPart } from '@/lib/api/model'
 
 interface TextPartProps {
   part: TextPart

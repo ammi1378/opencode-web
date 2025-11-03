@@ -6,9 +6,9 @@ import type {
 } from './api/model'
 
 export function upsertMessage(
-  messages: SessionMessages200Item[],
+  messages: Array<SessionMessages200Item>,
   newMessage: EventMessageUpdated,
-): SessionMessages200Item[] {
+): Array<SessionMessages200Item> {
   const newMessages = [...messages]
   let insertionIndex = newMessages.length
 
@@ -35,9 +35,9 @@ export function upsertMessage(
 }
 
 export function upsertMessagPart(
-  messages: SessionMessages200Item[],
+  messages: Array<SessionMessages200Item>,
   newPart: EventMessagePartUpdated,
-): SessionMessages200Item[] | undefined {
+): Array<SessionMessages200Item> | undefined {
   const newMessages = [...messages]
   const messageToUpdateIndex = newMessages.findIndex(
     (msg) => msg.info.id === newPart.properties.part.messageID,

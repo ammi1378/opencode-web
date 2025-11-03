@@ -9,7 +9,7 @@
 export type EventTuiToastShowPropertiesVariant =
   (typeof EventTuiToastShowPropertiesVariant)[keyof typeof EventTuiToastShowPropertiesVariant]
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
+ 
 export const EventTuiToastShowPropertiesVariant = {
   info: 'info',
   success: 'success',

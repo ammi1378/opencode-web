@@ -7,10 +7,13 @@ import {
   Command,
   File,
   Inbox,
+  Plus,
   Send,
   Trash2,
 } from 'lucide-react'
 
+import { Link, useMatch, useMatches } from '@tanstack/react-router'
+import type { FileRouteTypes } from '@/routeTree.gen'
 import { Label } from '@/components/ui/label'
 import {
   Sidebar,
@@ -31,8 +34,6 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 import { Switch } from '@/components/ui/switch'
-import { Link, useMatch, useMatches } from '@tanstack/react-router'
-import type { FileRouteTypes } from '@/routeTree.gen'
 import { useServers } from '@/lib/servers/hooks'
 import {
   Collapsible,
@@ -42,12 +43,13 @@ import {
 import { cn } from '@/lib/utils'
 import { ServerContext } from '@/hooks/context/server-context'
 import { useSessionList } from '@/lib/api/default/default'
+import { Button } from '@/components/ui/button'
 
 export function SessionSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const matchIsSessionChatPage = useMatch({
-    from: '/servers/$serverId_/$sessionId/chat',
+    from: '/servers/$serverId_/chat/$sessionId',
     shouldThrow: false,
   })
   const { selectedServer: server } = useContext(ServerContext)
@@ -71,6 +73,14 @@ export function SessionSidebar({
   return (
     <Sidebar collapsible="none" className="hidden flex-1 md:flex">
       <SidebarHeader className="gap-3.5 border-b p-4">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <Button className='w-full' asChild>
+
+              <Plus />
+              New Chat</Button>
+          </SidebarMenuItem>
+        </SidebarMenu>
         {/* <div className="flex w-full items-center justify-between">
           <div className="text-foreground text-base font-medium">
             {activeItem?.title}
@@ -91,7 +101,7 @@ export function SessionSidebar({
                 <SidebarMenuItem key={session.id}>
                   <SidebarMenuButton className="h-auto" asChild>
                     <Link
-                      to="/servers/$serverId/$sessionId/chat"
+                      to="/servers/$serverId/chat/$sessionId"
                       params={{
                         serverId: server?.identifier?.toString()!,
                         sessionId: session.id,

@@ -9,7 +9,7 @@
 export type ConfigProviderModelsStatus =
   (typeof ConfigProviderModelsStatus)[keyof typeof ConfigProviderModelsStatus]
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
+ 
 export const ConfigProviderModelsStatus = {
   alpha: 'alpha',
   beta: 'beta',

@@ -17,5 +17,5 @@ export type SessionPromptBody = {
   noReply?: boolean
   system?: string
   tools?: SessionPromptBodyTools
-  parts: SessionPromptBodyPartsItem[]
+  parts: Array<SessionPromptBodyPartsItem>
 }

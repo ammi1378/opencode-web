@@ -11,7 +11,7 @@
  */
 export type ConfigShare = (typeof ConfigShare)[keyof typeof ConfigShare]
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
+ 
 export const ConfigShare = {
   manual: 'manual',
   auto: 'auto',

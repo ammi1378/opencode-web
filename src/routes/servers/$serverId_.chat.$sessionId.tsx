@@ -1,5 +1,8 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
+import { useContext, useEffect, useMemo, useState } from 'react'
+import type { Agent } from '@/lib/api/model'
+import type {IProviderContext, ISessionContext} from '@/hooks/context/session-context';
 import { useServers } from '@/lib/servers/hooks'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
@@ -9,19 +12,17 @@ import { ServerContext } from '@/hooks/context/server-context'
 import { useSSEStream } from '@/hooks/use-event-subscibe'
 import { SessionChatInput } from '@/components/chat/session-chat-input'
 import {
-  SessionContext,
-  type IProviderContext,
-  type ISessionContext,
+  
+  
+  SessionContext
 } from '@/hooks/context/session-context'
-import { useContext, useEffect, useMemo, useState } from 'react'
 import {
   useAppAgents,
   useConfigGet,
   useConfigProviders,
 } from '@/lib/api/default/default'
-import type { Agent } from '@/lib/api/model'
 
-export const Route = createFileRoute('/servers/$serverId_/$sessionId/chat')({
+export const Route = createFileRoute('/servers/$serverId_/chat/$sessionId')({
   component: SessionChatPage,
 })
 
@@ -61,8 +62,8 @@ function SessionChatPage() {
 
   const agentsConfig = useMemo(() => {
     const initialValue: {
-      primaryAgents: Agent[]
-      subAgents: Agent[]
+      primaryAgents: Array<Agent>
+      subAgents: Array<Agent>
     } = {
       primaryAgents: [],
       subAgents: [],

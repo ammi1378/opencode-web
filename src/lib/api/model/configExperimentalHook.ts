@@ -10,5 +10,5 @@ import type { ConfigExperimentalHookSessionCompletedItem } from './configExperim
 
 export type ConfigExperimentalHook = {
   file_edited?: ConfigExperimentalHookFileEdited
-  session_completed?: ConfigExperimentalHookSessionCompletedItem[]
+  session_completed?: Array<ConfigExperimentalHookSessionCompletedItem>
 }

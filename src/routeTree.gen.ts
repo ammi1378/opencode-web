@@ -13,7 +13,7 @@ import { Route as ServersRouteRouteImport } from './routes/servers/route'
 import { Route as ServersIndexRouteImport } from './routes/servers/index'
 import { Route as ServersServerIdRouteImport } from './routes/servers/$serverId'
 import { Route as ServersServerIdSessionsRouteImport } from './routes/servers/$serverId.sessions'
-import { Route as ServersServerIdSessionIdChatRouteImport } from './routes/servers/$serverId_.$sessionId.chat'
+import { Route as ServersServerIdChatSessionIdRouteImport } from './routes/servers/$serverId_.chat.$sessionId'
 
 const ServersRouteRoute = ServersRouteRouteImport.update({
   id: '/servers',
@@ -35,10 +35,10 @@ const ServersServerIdSessionsRoute = ServersServerIdSessionsRouteImport.update({
   path: '/sessions',
   getParentRoute: () => ServersServerIdRoute,
 } as any)
-const ServersServerIdSessionIdChatRoute =
-  ServersServerIdSessionIdChatRouteImport.update({
-    id: '/$serverId_/$sessionId/chat',
-    path: '/$serverId/$sessionId/chat',
+const ServersServerIdChatSessionIdRoute =
+  ServersServerIdChatSessionIdRouteImport.update({
+    id: '/$serverId_/chat/$sessionId',
+    path: '/$serverId/chat/$sessionId',
     getParentRoute: () => ServersRouteRoute,
   } as any)
 
@@ -47,13 +47,13 @@ export interface FileRoutesByFullPath {
   '/servers/$serverId': typeof ServersServerIdRouteWithChildren
   '/servers/': typeof ServersIndexRoute
   '/servers/$serverId/sessions': typeof ServersServerIdSessionsRoute
-  '/servers/$serverId/$sessionId/chat': typeof ServersServerIdSessionIdChatRoute
+  '/servers/$serverId/chat/$sessionId': typeof ServersServerIdChatSessionIdRoute
 }
 export interface FileRoutesByTo {
   '/servers/$serverId': typeof ServersServerIdRouteWithChildren
   '/servers': typeof ServersIndexRoute
   '/servers/$serverId/sessions': typeof ServersServerIdSessionsRoute
-  '/servers/$serverId/$sessionId/chat': typeof ServersServerIdSessionIdChatRoute
+  '/servers/$serverId/chat/$sessionId': typeof ServersServerIdChatSessionIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,7 +61,7 @@ export interface FileRoutesById {
   '/servers/$serverId': typeof ServersServerIdRouteWithChildren
   '/servers/': typeof ServersIndexRoute
   '/servers/$serverId/sessions': typeof ServersServerIdSessionsRoute
-  '/servers/$serverId_/$sessionId/chat': typeof ServersServerIdSessionIdChatRoute
+  '/servers/$serverId_/chat/$sessionId': typeof ServersServerIdChatSessionIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -70,20 +70,20 @@ export interface FileRouteTypes {
     | '/servers/$serverId'
     | '/servers/'
     | '/servers/$serverId/sessions'
-    | '/servers/$serverId/$sessionId/chat'
+    | '/servers/$serverId/chat/$sessionId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/servers/$serverId'
     | '/servers'
     | '/servers/$serverId/sessions'
-    | '/servers/$serverId/$sessionId/chat'
+    | '/servers/$serverId/chat/$sessionId'
   id:
     | '__root__'
     | '/servers'
     | '/servers/$serverId'
     | '/servers/'
     | '/servers/$serverId/sessions'
-    | '/servers/$serverId_/$sessionId/chat'
+    | '/servers/$serverId_/chat/$sessionId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -120,11 +120,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServersServerIdSessionsRouteImport
       parentRoute: typeof ServersServerIdRoute
     }
-    '/servers/$serverId_/$sessionId/chat': {
-      id: '/servers/$serverId_/$sessionId/chat'
-      path: '/$serverId/$sessionId/chat'
-      fullPath: '/servers/$serverId/$sessionId/chat'
-      preLoaderRoute: typeof ServersServerIdSessionIdChatRouteImport
+    '/servers/$serverId_/chat/$sessionId': {
+      id: '/servers/$serverId_/chat/$sessionId'
+      path: '/$serverId/chat/$sessionId'
+      fullPath: '/servers/$serverId/chat/$sessionId'
+      preLoaderRoute: typeof ServersServerIdChatSessionIdRouteImport
       parentRoute: typeof ServersRouteRoute
     }
   }
@@ -145,13 +145,13 @@ const ServersServerIdRouteWithChildren = ServersServerIdRoute._addFileChildren(
 interface ServersRouteRouteChildren {
   ServersServerIdRoute: typeof ServersServerIdRouteWithChildren
   ServersIndexRoute: typeof ServersIndexRoute
-  ServersServerIdSessionIdChatRoute: typeof ServersServerIdSessionIdChatRoute
+  ServersServerIdChatSessionIdRoute: typeof ServersServerIdChatSessionIdRoute
 }
 
 const ServersRouteRouteChildren: ServersRouteRouteChildren = {
   ServersServerIdRoute: ServersServerIdRouteWithChildren,
   ServersIndexRoute: ServersIndexRoute,
-  ServersServerIdSessionIdChatRoute: ServersServerIdSessionIdChatRoute,
+  ServersServerIdChatSessionIdRoute: ServersServerIdChatSessionIdRoute,
 }
 
 const ServersRouteRouteWithChildren = ServersRouteRoute._addFileChildren(

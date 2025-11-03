@@ -10,5 +10,5 @@ import type { FileDiff } from './fileDiff'
 export type UserMessageSummary = {
   title?: string
   body?: string
-  diffs: FileDiff[]
+  diffs: Array<FileDiff>
 }

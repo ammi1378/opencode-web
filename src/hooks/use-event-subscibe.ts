@@ -1,23 +1,23 @@
 // hooks/useSSEStream.ts
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import type { Event, SessionMessages200Item } from '@/lib/api/model'
 import {
   getEventSubscribeQueryKey,
   getSessionMessagesQueryKey,
 } from '@/lib/api/default/default'
-import type { Event, SessionMessages200Item } from '@/lib/api/model'
-import { upsertMessage, upsertMessagPart } from '@/lib/update-center'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { upsertMessagPart, upsertMessage } from '@/lib/update-center'
 
 interface UseSSEStreamOptions {
   directory?: string
   endpoint: string
-  queryKey: string[]
+  queryKey: Array<string>
   maxItems?: number // Limit number of items kept in memory
   enabled?: boolean
 }
 
 interface UseSSEStreamReturn {
-  data: Event[]
+  data: Array<Event>
   isConnected: boolean
   error: string | null
   reconnect: () => void
@@ -42,7 +42,7 @@ export function useSSEStream<T = any>({
   const [error, setError] = useState<string | null>(null)
   const queryKey = getEventSubscribeQueryKey({ })
 
-  const { data = [] } = useQuery<Event[]>({
+  const { data = [] } = useQuery<Array<Event>>({
     queryKey,
     queryFn: () => [],
     staleTime: Infinity,
@@ -68,7 +68,7 @@ export function useSSEStream<T = any>({
       try {
         const newItem = JSON.parse(event.data)
 
-        queryClient.setQueryData<T[]>(queryKey, (oldData = []) => {
+        queryClient.setQueryData<Array<T>>(queryKey, (oldData = []) => {
           const newData = [...oldData, newItem]
           return newData.slice(0, maxItems)
         })
@@ -102,8 +102,8 @@ export function useSSEStream<T = any>({
     connect()
   }
 
-  const clear = (preservedEvents: Event[] = []) => {
-    queryClient.setQueryData<Event[]>(queryKey, preservedEvents)
+  const clear = (preservedEvents: Array<Event> = []) => {
+    queryClient.setQueryData<Array<Event>>(queryKey, preservedEvents)
   }
 
   const batchTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
@@ -150,15 +150,15 @@ export function useSSEStream<T = any>({
   }, [data])
 
   const updateOpenCodeState = useCallback(
-    (events: Event[]) => {
-      const onholdEvents: Event[] = []
+    (events: Array<Event>) => {
+      const onholdEvents: Array<Event> = []
       // const events = updateQueue.current
       logger('[OC_STATE]: Updates started!')
       events.forEach((ocEvent) => {
         if (ocEvent.type === 'message.updated') {
           queryClient.setQueryData(
             getSessionMessagesQueryKey(ocEvent.properties.info.sessionID, {}),
-            (val: SessionMessages200Item[] | undefined) => {
+            (val: Array<SessionMessages200Item> | undefined) => {
               if (val) {
                 const newState = upsertMessage(val, ocEvent)
 
@@ -173,7 +173,7 @@ export function useSSEStream<T = any>({
 
           queryClient.setQueryData(
             getSessionMessagesQueryKey(ocEvent.properties.part.sessionID, {}),
-            (val: SessionMessages200Item[] | undefined) => {
+            (val: Array<SessionMessages200Item> | undefined) => {
               if (val) {
                 const newState = upsertMessagPart(val, ocEvent)
 

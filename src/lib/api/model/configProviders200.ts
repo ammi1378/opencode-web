@@ -9,6 +9,6 @@ import type { Provider } from './provider'
 import type { ConfigProviders200Default } from './configProviders200Default'
 
 export type ConfigProviders200 = {
-  providers: Provider[]
+  providers: Array<Provider>
   default: ConfigProviders200Default
 }

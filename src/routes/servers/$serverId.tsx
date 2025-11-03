@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Server } from 'lucide-react'
+import { useContext, useEffect } from 'react'
 import { useServers } from '@/lib/servers/hooks'
 import { SessionList } from '@/components/sessions/session-list'
 import { ServerContext } from '@/hooks/context/server-context'
-import { useContext, useEffect } from 'react'
 
 export const Route = createFileRoute('/servers/$serverId')({
   component: ServerLayout,
