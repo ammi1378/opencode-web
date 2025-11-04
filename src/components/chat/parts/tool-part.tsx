@@ -172,7 +172,7 @@ export function ToolPart({ part }: ToolPartProps) {
 }
 
 export function TaskToolPart({ part }: { part: ITaskToolPart }) {
-  const server = useContext(ServerContext)
+  const {selectedServer: server} = useContext(ServerContext)
 
   const childSessionTask =
     (part.state.status === 'completed' || part.state.status === 'running') &&
@@ -188,7 +188,7 @@ export function TaskToolPart({ part }: { part: ITaskToolPart }) {
           asChild
         >
           <Link
-            to="/servers/$serverId/$sessionId/chat"
+            to="/servers/$serverId/chat/$sessionId"
             params={{
               serverId: server.identifier.toString(),
               sessionId: childSessionTask,

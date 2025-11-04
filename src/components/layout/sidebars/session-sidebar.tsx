@@ -49,7 +49,7 @@ export function SessionSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const matchIsSessionChatPage = useMatch({
-    from: '/servers/$serverId_/chat/$sessionId',
+    from: '/servers/$serverId/chat/$sessionId',
     shouldThrow: false,
   })
   const { selectedServer: server } = useContext(ServerContext)
@@ -75,22 +75,17 @@ export function SessionSidebar({
       <SidebarHeader className="gap-3.5 border-b p-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <Button className='w-full' asChild>
-
-              <Plus />
-              New Chat</Button>
+            <Button className="w-full" asChild>
+              <Link
+                to="/servers/$serverId/chat/new"
+                params={{ serverId: server?.identifier.toString()! }}
+              >
+                <Plus />
+                New Chat
+              </Link>
+            </Button>
           </SidebarMenuItem>
         </SidebarMenu>
-        {/* <div className="flex w-full items-center justify-between">
-          <div className="text-foreground text-base font-medium">
-            {activeItem?.title}
-          </div>
-          <Label className="flex items-center gap-2 text-sm">
-            <span>Unreads</span>
-            <Switch className="shadow-none" />
-          </Label>
-        </div>
-        <SidebarInput placeholder="Type to search..." /> */}
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -122,7 +117,6 @@ export function SessionSidebar({
                               hour12: false,
                             },
                           )}
-                          {/* {session.time.created} */}
                         </span>
                       </div>
                       <span className="font-medium">{session.directory}</span>

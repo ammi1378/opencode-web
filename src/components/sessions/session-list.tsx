@@ -133,7 +133,7 @@ export function SessionList({ server }: SessionListProps) {
                 <div className="flex space-x-2">
                   {server && (
                     <Link
-                      to="/servers/$serverId/$sessionId/chat"
+                      to="/servers/$serverId/chat/$sessionId"
                       params={{
                         serverId: server.identifier.toString(),
                         sessionId: session.id,

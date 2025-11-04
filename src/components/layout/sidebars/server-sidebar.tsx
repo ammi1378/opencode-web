@@ -43,13 +43,12 @@ import { cn } from '@/lib/utils'
 export function ServerSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
-  const match = useMatch({ from: '/servers/$serverId', shouldThrow: false })
+  const match = useMatch({ from: '/servers/$serverId/', shouldThrow: false })
   const matchIsSessionsPage = useMatch({
     from: '/servers/$serverId/sessions',
     shouldThrow: false,
   })
 
-  console.log({ match })
   //  (['/servers', '/servers/$serverId'] satisfies FileRouteTypes['fullPaths'][]).includes(currentMatch?.fullPath)
   const { servers } = useServers()
   return (
@@ -70,7 +69,9 @@ export function ServerSidebar({
         <SidebarGroup className="px-0">
           {servers.map((server) => {
             const isActive =
-              match?.params.serverId === server.identifier.toString()
+              match?.params.serverId === server.identifier.toString() ||
+              matchIsSessionsPage?.params.serverId ===
+                server.identifier.toString()
             return (
               <Collapsible key={server.id} asChild open={isActive}>
                 <SidebarMenuItem>

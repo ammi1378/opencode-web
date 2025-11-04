@@ -2,47 +2,41 @@ import { Link, createFileRoute } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
 import { useContext, useEffect, useMemo, useState } from 'react'
 import type { Agent } from '@/lib/api/model'
-import type {IProviderContext, ISessionContext} from '@/hooks/context/session-context';
-import { useServers } from '@/lib/servers/hooks'
+import type {
+  IProviderContext,
+  ISessionContext,
+} from '@/hooks/context/session-context'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
 import { SessionChat } from '@/components/chat/session-chat'
 import { ServerContext } from '@/hooks/context/server-context'
 import { useSSEStream } from '@/hooks/use-event-subscibe'
 import { SessionChatInput } from '@/components/chat/session-chat-input'
-import {
-  
-  
-  SessionContext
-} from '@/hooks/context/session-context'
+import { SessionContext } from '@/hooks/context/session-context'
 import {
   useAppAgents,
   useConfigGet,
   useConfigProviders,
 } from '@/lib/api/default/default'
 
-export const Route = createFileRoute('/servers/$serverId_/chat/$sessionId')({
+export const Route = createFileRoute('/servers/$serverId/chat/new')({
   component: SessionChatPage,
 })
 
 function SessionChatPage() {
-  const { serverId, sessionId } = Route.useParams()
-  const { selectedServer: server, servers, setSelectedServer } =
-    useContext(ServerContext)
+  const { serverId } = Route.useParams()
+  const {
+    selectedServer: server,
+    servers,
+    setSelectedServer,
+  } = useContext(ServerContext)
+
   useEffect(() => {
-    const server = servers?.find((s) => s.identifier === parseInt(serverId))
-    // debugger
-    setSelectedServer && setSelectedServer(server)
+    const localServer = servers?.find(
+      (s) => s.identifier === parseInt(serverId),
+    )
+    setSelectedServer && setSelectedServer(localServer)
   }, [serverId, servers])
 
-  useSSEStream({
-    endpoint: `${server?.url}/event`,
-    queryKey: ['activity-log'],
-    maxItems: 100,
-    enabled: !!server,
-    // directory: '/Users/ammi1378/Documents/Personal/opencode-ui',
-  })
   const { data: config } = useConfigGet(
     {},
     { query: { enabled: !!server?.url }, request: { baseUrl: server?.url } },
@@ -73,7 +67,7 @@ function SessionChatPage() {
         initialValue.primaryAgents.push(agent)
       } else if (agent.mode === 'subagent') {
         initialValue.subAgents.push(agent)
-      } else if (agent.mode === 'all' || !agent.mode) {
+      } else {
         initialValue.primaryAgents.push(agent)
         initialValue.subAgents.push(agent)
       }
@@ -97,6 +91,10 @@ function SessionChatPage() {
 
     return providers
   }, [providersData])
+
+  const defaultProvider = providersConfig?.filter(
+    (i) => !!i?.models?.filter((i) => i.id === config?.model)?.length,
+  )
 
 
 
@@ -124,6 +122,9 @@ function SessionChatPage() {
           config,
           agentsConfig: agentsConfig,
           providers: providersConfig,
+          modelID: config?.model,
+          providerID: defaultProvider?.at(0)?.id || undefined,
+          mode: agentsConfig.primaryAgents.at(0)?.mode,
           ...sessionContext,
         },
         updateContext: (context) =>
@@ -143,25 +144,21 @@ function SessionChatPage() {
                     </Button>
                   </Link>
                   <div>
-                    <h2 className="text-2xl font-bold">Session Chat</h2>
+                    <h2 className="text-2xl font-bold">New Chat</h2>
                     <p className="text-muted-foreground">
-                      Viewing messages for session {sessionId} on {server.name}
+                      Start a new chat on {server.name}
                     </p>
                   </div>
                 </div>
               </div>
-              <SessionChat
-                server={server}
-                sessionId={sessionId}
-                hideAccordionUi
-              />
+              <SessionChat server={server} hideAccordionUi />
             </div>
             <div className="bg-linear-to-t from-white to-transparent h-8 absolute bottom-0 w-full"></div>
           </div>
         </div>
 
         <div className="container mx-auto min-h-48">
-          <SessionChatInput sessionId={sessionId} />
+          <SessionChatInput />
         </div>
       </div>
     </SessionContext>

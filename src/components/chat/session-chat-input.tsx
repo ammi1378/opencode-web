@@ -24,25 +24,26 @@ import {
   CommandItem,
   CommandList,
 } from '../ui/command'
-import type {ChatInputEditorRef} from '@/components/ui/chat-input';
+import type { ChatInputEditorRef } from '@/components/ui/chat-input'
 import {
   ChatInput,
   ChatInputEditor,
-  
   ChatInputGroupAddon,
   ChatInputMention,
   ChatInputSubmitButton,
   createMentionConfig,
-  useChatInput
+  useChatInput,
 } from '@/components/ui/chat-input'
 import { ServerContext } from '@/hooks/context/server-context'
 import {
+  getSessionGetQueryKey,
   useSessionCreate,
   useSessionGet,
   useSessionPrompt,
 } from '@/lib/api/default/default'
 import { SessionContext } from '@/hooks/context/session-context'
 import { cn } from '@/lib/utils'
+import { useNavigate } from '@tanstack/react-router'
 
 type Member = { id: string; name: string; avatar?: string }
 const members: Array<Member> = [
@@ -62,18 +63,21 @@ export const SessionChatInput = ({ sessionId }: { sessionId?: string }) => {
       request: { baseUrl: server?.url },
     },
   )
-  const { mutate, isPending } = useSessionPrompt({
+
+  const navigate = useNavigate({ from: '/servers/$serverId/chat/new' })
+
+  const { mutate, mutateAsync, isPending } = useSessionPrompt({
     mutation: {},
     request: { baseURL: server?.url },
   })
 
-  // const {
-  //   mutateAsync: mutateCreateSessionAsync,
-  //   isPending: isCreateSessionPending,
-  // } = useSessionCreate({
-  //   mutation: {},
-  //   request: { baseURL: server?.url },
-  // })
+  const {
+    mutateAsync: mutateCreateSessionAsync,
+    isPending: isCreateSessionPending,
+  } = useSessionCreate({
+    mutation: {},
+    request: { baseURL: server?.url },
+  })
   const {
     value: message,
     onChange,
@@ -93,8 +97,44 @@ export const SessionChatInput = ({ sessionId }: { sessionId?: string }) => {
     },
   })
 
+  console.log({ sessionContext: sessionContext?.modelID })
+
+  const createNewChat = useCallback(
+    async (message: string) => {
+      const newSession = await mutateCreateSessionAsync({
+        data: {},
+      })
+
+      await mutateAsync({
+        data: {
+          parts: [{ type: 'text', text: message, synthetic: false }],
+          agent: sessionContext?.mode,
+          model: {
+            providerID: sessionContext?.providerID!,
+            modelID: sessionContext?.modelID!,
+          },
+        },
+        id: newSession.id,
+        // params: { directory: newSession.directory },
+      })
+
+      navigate({
+        to: '/servers/$serverId/chat/$sessionId',
+        params: {
+          sessionId: newSession.id,
+          serverId: server?.identifier.toString(),
+        },
+      })
+    },
+    [mutateCreateSessionAsync, mutateAsync, sessionContext, navigate],
+  )
+
   const submitMessage = useCallback(() => {
     const message = editorRef?.current?.editor?.getText()
+
+    if (message?.length && !session) {
+      createNewChat(message)
+    }
     if (!message?.length || !session) return
     mutate({
       data: {
@@ -104,7 +144,6 @@ export const SessionChatInput = ({ sessionId }: { sessionId?: string }) => {
           providerID: sessionContext?.providerID!,
           modelID: sessionContext?.modelID!,
         },
-        system: 'you are fodgather ai tool. the best mafia ai.',
       },
       id: session.id,
       params: { directory: session.directory },
@@ -170,8 +209,7 @@ export const SessionChatInput = ({ sessionId }: { sessionId?: string }) => {
                   .map((agent) => {
                     return (
                       <DropdownMenuRadioItem value={agent.name}>
-                        {typeof agent.name === 'string' &&
-                          (agent.name)}
+                        {typeof agent.name === 'string' && agent.name}
                       </DropdownMenuRadioItem>
                     )
                   })}
@@ -207,7 +245,8 @@ export const SessionChatInput = ({ sessionId }: { sessionId?: string }) => {
                       {provider.models.map((model) => {
                         return (
                           <CommandItem
-                            key={model.id}
+                            value={`${provider.id}-${model.id}`}
+                            key={`${provider.id}-${model.id}`}
                             onSelect={() => {
                               updateContext({
                                 providerID: provider.id,

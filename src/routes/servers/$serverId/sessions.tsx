@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { RefreshCw } from 'lucide-react'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { SessionList } from '@/components/sessions/session-list'
 import { ServerContext } from '@/hooks/context/server-context'
@@ -10,11 +10,19 @@ export const Route = createFileRoute('/servers/$serverId/sessions')({
 })
 
 function ServerSessionsPage() {
-  const { selectedServer } = useContext(ServerContext)
+  const { serverId } = Route.useParams()
+  const { setSelectedServer, selectedServer, servers } =
+    useContext(ServerContext)
+
+  useEffect(() => {
+    const server = servers?.find((s) => s.identifier === parseInt(serverId))
+    setSelectedServer && setSelectedServer(server)
+  }, [serverId, servers])
 
   if (!selectedServer) {
     return undefined
   }
+
 
   return (
     <div className="space-y-6 overflow-auto">

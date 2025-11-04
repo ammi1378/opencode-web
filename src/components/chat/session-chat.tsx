@@ -1,5 +1,5 @@
 import { MessageSquare } from 'lucide-react'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import {
   Accordion,
   AccordionContent,
@@ -8,7 +8,7 @@ import {
 } from '../ui/accordion'
 import { SessionChatMessage } from './session-chat-message'
 import type { Server } from '@/lib/servers/types'
-import type {ISessionContext} from '@/hooks/context/session-context';
+import type { ISessionContext } from '@/hooks/context/session-context'
 import { useSessionGet, useSessionMessages } from '@/lib/api/default/default'
 import {
   Card,
@@ -20,10 +20,8 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import { ServerContext } from '@/hooks/context/server-context'
-import {
-  
-  SessionContext
-} from '@/hooks/context/session-context'
+import { SessionContext } from '@/hooks/context/session-context'
+import { useThrottle } from '@/hooks/use-throttle'
 
 interface SessionChatProps {
   sessionId?: string
@@ -75,6 +73,25 @@ export function SessionChat({
     },
     [sessionContext],
   )
+  const scrollableContainerRef = useRef<HTMLDivElement>(null)
+  const throttledMessages = useThrottle(messages, 100)
+  const [hadInitialScroll, setHadInitialScroll] = useState(false)
+
+  const scrollChat = useCallback(() => {
+    if (!scrollableContainerRef?.current) return
+    if (!hadInitialScroll) {
+      setHadInitialScroll(true)
+    }
+
+    scrollableContainerRef.current.scrollTo({
+      top: scrollableContainerRef.current.scrollHeight,
+      behavior: hadInitialScroll ? 'smooth' : 'instant',
+    })
+
+  }, [hadInitialScroll, scrollableContainerRef])
+  useEffect(() => {
+    scrollChat()
+  }, [messages])
 
   useEffect(() => {
     const lastMessage = messages?.at(-1)
@@ -128,52 +145,66 @@ export function SessionChat({
     return
   }
   return (
-    <Accordion
-      type="single"
-      collapsible
-      value={defaultOpen || hideAccordionUi ? session?.id : openSession}
-      onValueChange={setOpenSession}
+    <div
+      ref={scrollableContainerRef}
+      className="overflow-auto h-full [scrollbar-gutter:stable_both-edges] pb-4"
     >
-      <AccordionItem value={session.id}>
-        <AccordionTrigger className={cn(hideAccordionUi && 'sr-only')}>
-          {session.title}
-        </AccordionTrigger>
-        <AccordionContent className="">
-          {error ? (
-            <Card className="border-destructive/50">
-              <CardHeader>
-                <CardTitle className="text-destructive flex items-center">
-                  <MessageSquare className="mr-2 h-5 w-5" />
-                  Error Loading Messages
-                </CardTitle>
-                {/* <CardDescription>{error.data as any}</CardDescription> */}
-              </CardHeader>
-            </Card>
-          ) : !messages || messages.length === 0 ? (
-            <Card>
-              <CardHeader className="text-center">
-                <MessageSquare className="mx-auto h-12 w-12 text-muted-foreground" />
-                <CardTitle>No Messages Found</CardTitle>
-                <CardDescription>
-                  There are no messages available for this session.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          ) : (
-            <div className="space-y-4">
-              {messages.map((message) => {
-                return (
-                  <SessionChatMessage
-                    server={server}
-                    message={message}
-                    key={message.info.id}
-                  />
-                )
-              })}
-            </div>
-          )}
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+      <div className="container mx-auto relative s">
+        <div className="sticky top-0 bg-white py-3 border-b mb-2 z-10">
+          <h2 className="text-2xl font-bold">Session Chat</h2>
+          <p className="text-muted-foreground">
+            Viewing messages for session {sessionId} on {server?.name}
+          </p>
+        </div>
+        <Accordion
+          type="single"
+          collapsible
+          value={defaultOpen || hideAccordionUi ? session?.id : openSession}
+          onValueChange={setOpenSession}
+        >
+          <AccordionItem value={session.id}>
+            <AccordionTrigger className={cn(hideAccordionUi && 'sr-only')}>
+              {session.title}
+            </AccordionTrigger>
+            <AccordionContent className="">
+              {error ? (
+                <Card className="border-destructive/50">
+                  <CardHeader>
+                    <CardTitle className="text-destructive flex items-center">
+                      <MessageSquare className="mr-2 h-5 w-5" />
+                      Error Loading Messages
+                    </CardTitle>
+                    {/* <CardDescription>{error.data as any}</CardDescription> */}
+                  </CardHeader>
+                </Card>
+              ) : !messages || messages.length === 0 ? (
+                <Card>
+                  <CardHeader className="text-center">
+                    <MessageSquare className="mx-auto h-12 w-12 text-muted-foreground" />
+                    <CardTitle>No Messages Found</CardTitle>
+                    <CardDescription>
+                      There are no messages available for this session.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              ) : (
+                <div className="space-y-4">
+                  {messages.map((message) => {
+                    return (
+                      <SessionChatMessage
+                        server={server}
+                        message={message}
+                        key={message.info.id}
+                      />
+                    )
+                  })}
+                </div>
+              )}
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </div>
+      <div className="bg-linear-to-t from-white to-transparent h-8 absolute bottom-0 w-full"></div>
+    </div>
   )
 }

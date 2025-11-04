@@ -1,17 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Server } from 'lucide-react'
 import { useContext, useEffect } from 'react'
-import { useServers } from '@/lib/servers/hooks'
 import { SessionList } from '@/components/sessions/session-list'
 import { ServerContext } from '@/hooks/context/server-context'
 
-export const Route = createFileRoute('/servers/$serverId')({
+export const Route = createFileRoute('/servers/$serverId/')({
   component: ServerLayout,
 })
 
 function ServerLayout() {
   const { serverId } = Route.useParams()
-  const { setSelectedServer, selectedServer, servers } = useContext(ServerContext)
+  const { setSelectedServer, selectedServer, servers } =
+    useContext(ServerContext)
 
   useEffect(() => {
     const server = servers?.find((s) => s.identifier === parseInt(serverId))
