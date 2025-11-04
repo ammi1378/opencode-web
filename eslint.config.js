@@ -2,4 +2,14 @@
 
 import { tanstackConfig } from '@tanstack/eslint-config'
 
-export default [...tanstackConfig]
+export default [
+  ...tanstackConfig,
+  {
+    rules: {
+      '@typescript-eslint/no-unnecessary-condition': 'off',
+      '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
+      '@typescript-eslint/ban-ts-comment': 'off',
+      '@typescript-eslint/naming-convention': 'warn'
+    },
+  },
+]

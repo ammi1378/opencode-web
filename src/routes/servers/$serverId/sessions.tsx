@@ -39,7 +39,7 @@ function ServerSessionsPage() {
           // disabled={isLoading}
         >
           <RefreshCw
-            className={`mr-2 h-4 w-4 ${false ? 'animate-spin' : ''}`}
+            className={`mr-2 h-4 w-4`}
           />
           Refresh
         </Button>

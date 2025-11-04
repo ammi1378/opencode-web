@@ -25,8 +25,9 @@ interface UseSSEStreamReturn {
 }
 const batch = !true
 const batchSize = 20
+const shouldLog = false
 const logger = (msg: any) => {
-  if (false) {
+  if (shouldLog) {
     console.log(msg)
   }
 }

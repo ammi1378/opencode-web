@@ -6,6 +6,7 @@ import {
   FactoryIcon,
   MoreHorizontalIcon,
 } from 'lucide-react'
+import { useNavigate } from '@tanstack/react-router'
 import { ButtonGroup } from '../ui/button-group'
 import { Button } from '../ui/button'
 import {
@@ -43,7 +44,6 @@ import {
 } from '@/lib/api/default/default'
 import { SessionContext } from '@/hooks/context/session-context'
 import { cn } from '@/lib/utils'
-import { useNavigate } from '@tanstack/react-router'
 
 type Member = { id: string; name: string; avatar?: string }
 const members: Array<Member> = [
@@ -100,14 +100,14 @@ export const SessionChatInput = ({ sessionId }: { sessionId?: string }) => {
   console.log({ sessionContext: sessionContext?.modelID })
 
   const createNewChat = useCallback(
-    async (message: string) => {
+    async (localMessage: string) => {
       const newSession = await mutateCreateSessionAsync({
         data: {},
       })
 
       await mutateAsync({
         data: {
-          parts: [{ type: 'text', text: message, synthetic: false }],
+          parts: [{ type: 'text', text: localMessage, synthetic: false }],
           agent: sessionContext?.mode,
           model: {
             providerID: sessionContext?.providerID!,
