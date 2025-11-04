@@ -22,6 +22,9 @@ import { cn } from '@/lib/utils'
 import { ServerContext } from '@/hooks/context/server-context'
 import { SessionContext } from '@/hooks/context/session-context'
 import { useThrottle } from '@/hooks/use-throttle'
+import { Switch } from '../ui/switch'
+import { Label } from '../ui/label'
+const SCROLL_UP_THRESHOLD = 20
 
 interface SessionChatProps {
   sessionId?: string
@@ -74,21 +77,41 @@ export function SessionChat({
     [sessionContext],
   )
   const scrollableContainerRef = useRef<HTMLDivElement>(null)
-  const throttledMessages = useThrottle(messages, 100)
   const [hadInitialScroll, setHadInitialScroll] = useState(false)
+  const [userAutoScrollManual, setUserAutoScrollManual] = useState<
+    boolean | undefined
+  >(undefined)
+  const [userAutoScrollAutomatic, setUserAutoScrollAutomatic] = useState(true)
 
   const scrollChat = useCallback(() => {
     if (!scrollableContainerRef?.current) return
-    if (!hadInitialScroll) {
-      setHadInitialScroll(true)
+    // if (userAutoScrollManual === false) {
+    //   return
+    // }
+    let shouldScroll = false
+    // if (userAutoScrollManual === true && !userAutoScrollAutomatic) {}
+    if (userAutoScrollManual !== undefined) {
+      shouldScroll = userAutoScrollManual
+    } else {
+      shouldScroll = userAutoScrollAutomatic
     }
 
-    scrollableContainerRef.current.scrollTo({
-      top: scrollableContainerRef.current.scrollHeight,
-      behavior: hadInitialScroll ? 'smooth' : 'instant',
-    })
-
-  }, [hadInitialScroll, scrollableContainerRef])
+    if (shouldScroll) {
+      if (!hadInitialScroll) {
+        setHadInitialScroll(true)
+      }
+      scrollableContainerRef.current.scrollTo({
+        top: scrollableContainerRef.current.scrollHeight,
+        behavior: hadInitialScroll ? 'smooth' : 'instant',
+      })
+    }
+  }, [
+    hadInitialScroll,
+    scrollableContainerRef,
+    userAutoScrollManual,
+    userAutoScrollAutomatic,
+    userAutoScrollManual,
+  ])
   useEffect(() => {
     scrollChat()
   }, [messages])
@@ -117,6 +140,79 @@ export function SessionChat({
   }, [messages])
 
   const [openSession, setOpenSession] = useState<string>()
+
+  const prevScrollY = useRef(0)
+  const hasReachedEnd = useRef(false)
+  const onSignificantScrollUp = useCallback(() => {
+    if (
+      userAutoScrollManual !== undefined ||
+      userAutoScrollAutomatic === false
+    ) {
+      return
+    }
+
+    setUserAutoScrollAutomatic(false)
+  }, [
+    userAutoScrollManual,
+    userAutoScrollAutomatic,
+    setUserAutoScrollAutomatic,
+  ])
+
+  useEffect(() => {
+    console.log({ userAutoScrollAutomatic })
+  }, [userAutoScrollAutomatic])
+
+  const onScrolledToBottom = useCallback(() => {
+    if (
+      userAutoScrollManual !== undefined ||
+      userAutoScrollAutomatic === true
+    ) {
+      return
+    }
+
+    setUserAutoScrollAutomatic(true)
+  }, [
+    userAutoScrollManual,
+    userAutoScrollAutomatic,
+    setUserAutoScrollAutomatic,
+  ])
+  useEffect(() => {
+    const container = scrollableContainerRef.current
+    if (!container) return
+
+    const handleScroll = () => {
+      const currentScrollY = container.scrollTop
+      const scrollHeight = container.scrollHeight
+      const clientHeight = container.clientHeight
+
+      const scrollDelta = prevScrollY.current - currentScrollY // Positive if scrolling up
+      if (scrollDelta > SCROLL_UP_THRESHOLD) {
+        onSignificantScrollUp()
+        hasReachedEnd.current = false
+      }
+
+      const isAtBottom = currentScrollY + clientHeight >= scrollHeight - 20
+
+      if (isAtBottom && !hasReachedEnd.current) {
+        onScrolledToBottom()
+        hasReachedEnd.current = true // Set the flag to true
+      } else if (!isAtBottom) {
+        hasReachedEnd.current = false
+      }
+
+      prevScrollY.current = currentScrollY
+    }
+
+    container.addEventListener('scroll', handleScroll)
+
+    return () => {
+      container.removeEventListener('scroll', handleScroll)
+    }
+  }, [
+    scrollableContainerRef.current,
+    userAutoScrollAutomatic,
+    userAutoScrollManual,
+  ])
 
   if (!session || !messages) {
     return
@@ -150,11 +246,30 @@ export function SessionChat({
       className="overflow-auto h-full [scrollbar-gutter:stable_both-edges] pb-4"
     >
       <div className="container mx-auto relative s">
-        <div className="sticky top-0 bg-white py-3 border-b mb-2 z-10">
-          <h2 className="text-2xl font-bold">Session Chat</h2>
-          <p className="text-muted-foreground">
-            Viewing messages for session {sessionId} on {server?.name}
-          </p>
+        <div className="sticky top-0 bg-white py-3 border-b mb-2 z-10 flex justify-between">
+          <div>
+            <h2 className="text-2xl font-bold">Session Chat</h2>
+            <p className="text-muted-foreground">
+              Viewing messages for session {sessionId} on {server?.name}
+            </p>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Label htmlFor="auto-scroll-toggle">Auto scroll</Label>
+            <Switch
+              checked={
+                userAutoScrollManual === undefined
+                  ? userAutoScrollAutomatic
+                  : userAutoScrollManual
+              }
+              onCheckedChange={(v) => {
+                debugger
+                setUserAutoScrollManual(v)
+                setUserAutoScrollAutomatic(v)
+              }}
+              id="auto-scroll-toggle"
+            />
+          </div>
         </div>
         <Accordion
           type="single"

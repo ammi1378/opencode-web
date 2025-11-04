@@ -1,6 +1,6 @@
 'use client'
 
-import { useContext, useEffect } from 'react'
+import { useCallback, useContext, useEffect } from 'react'
 import {
   ArchiveX,
   ChevronRight,
@@ -12,7 +12,7 @@ import {
   Trash2,
 } from 'lucide-react'
 
-import { Link, useMatch, useMatches } from '@tanstack/react-router'
+import { Link, useMatch, useMatches, useNavigate } from '@tanstack/react-router'
 import type { FileRouteTypes } from '@/routeTree.gen'
 import { Label } from '@/components/ui/label'
 import {
@@ -42,7 +42,7 @@ import {
 } from '@/components/ui/collapsible'
 import { cn } from '@/lib/utils'
 import { ServerContext } from '@/hooks/context/server-context'
-import { useSessionList } from '@/lib/api/default/default'
+import { useSessionCreate, useSessionList } from '@/lib/api/default/default'
 import { Button } from '@/components/ui/button'
 
 export function SessionSidebar({
@@ -53,9 +53,6 @@ export function SessionSidebar({
     shouldThrow: false,
   })
   const { selectedServer: server } = useContext(ServerContext)
-  useEffect(() => {
-    console.log({ server })
-  }, [server])
   const { data: sessions } = useSessionList(
     {},
     {
@@ -67,22 +64,35 @@ export function SessionSidebar({
       },
     },
   )
+  const navigate = useNavigate()
 
   console.log({ sessions, server })
+  const { mutateAsync: mutateCreateSessionAsync } = useSessionCreate({
+    mutation: {},
+    request: { baseURL: server?.url },
+  })
+  const createNewChat = useCallback(async () => {
+    if (!server) return
+    const newSession = await mutateCreateSessionAsync({
+      data: {},
+    })
 
+    navigate({
+      to: '/servers/$serverId/chat/$sessionId',
+      params: {
+        sessionId: newSession.id,
+        serverId: server?.identifier.toString(),
+      },
+    })
+  }, [mutateCreateSessionAsync, navigate])
   return (
     <Sidebar collapsible="none" className="hidden flex-1 md:flex">
       <SidebarHeader className="gap-3.5 border-b p-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <Button className="w-full" asChild>
-              <Link
-                to="/servers/$serverId/chat/new"
-                params={{ serverId: server?.identifier.toString()! }}
-              >
-                <Plus />
-                New Chat
-              </Link>
+            <Button className="w-full" onClick={createNewChat}>
+              <Plus />
+              New Chat
             </Button>
           </SidebarMenuItem>
         </SidebarMenu>
