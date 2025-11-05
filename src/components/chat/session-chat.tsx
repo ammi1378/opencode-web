@@ -6,8 +6,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '../ui/accordion'
+import { Switch } from '../ui/switch'
+import { Label } from '../ui/label'
 import { SessionChatMessage } from './session-chat-message'
-import type { Server } from '@/lib/servers/types'
 import type { ISessionContext } from '@/hooks/context/session-context'
 import { useSessionGet, useSessionMessages } from '@/lib/api/default/default'
 import {
@@ -19,16 +20,12 @@ import {
 } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
-import { ServerContext } from '@/hooks/context/server-context'
 import { SessionContext } from '@/hooks/context/session-context'
-import { useThrottle } from '@/hooks/use-throttle'
-import { Switch } from '../ui/switch'
-import { Label } from '../ui/label'
+
 const SCROLL_UP_THRESHOLD = 20
 
 interface SessionChatProps {
   sessionId?: string
-  server: Server | undefined
   defaultOpen?: boolean
   hideAccordionUi?: boolean
 }
@@ -38,14 +35,12 @@ export function SessionChat({
   defaultOpen,
   hideAccordionUi,
 }: SessionChatProps) {
-  const { selectedServer: server } = useContext(ServerContext)
   const { context: sessionContext, updateContext } = useContext(SessionContext)
   const { data: session } = useSessionGet(
     sessionId!,
     {},
     {
-      query: { enabled: !!server?.url && !!sessionId?.length },
-      request: { baseUrl: server?.url },
+      query: { enabled: !!sessionId?.length },
     },
   )
   const {
@@ -57,10 +52,9 @@ export function SessionChat({
     {},
     {
       query: {
-        enabled: !!server?.url && !!sessionId?.length,
+        enabled: !!sessionId?.length,
         refetchOnWindowFocus: false,
       },
-      request: { baseUrl: server?.url },
     },
   )
 
@@ -85,11 +79,8 @@ export function SessionChat({
 
   const scrollChat = useCallback(() => {
     if (!scrollableContainerRef?.current) return
-    // if (userAutoScrollManual === false) {
-    //   return
-    // }
+ 
     let shouldScroll = false
-    // if (userAutoScrollManual === true && !userAutoScrollAutomatic) {}
     if (userAutoScrollManual !== undefined) {
       shouldScroll = userAutoScrollManual
     } else {
@@ -157,10 +148,6 @@ export function SessionChat({
     userAutoScrollAutomatic,
     setUserAutoScrollAutomatic,
   ])
-
-  useEffect(() => {
-    console.log({ userAutoScrollAutomatic })
-  }, [userAutoScrollAutomatic])
 
   const onScrolledToBottom = useCallback(() => {
     if (
@@ -250,7 +237,7 @@ export function SessionChat({
           <div>
             <h2 className="text-2xl font-bold">Session Chat</h2>
             <p className="text-muted-foreground">
-              Viewing messages for session {sessionId} on {server?.name}
+              Viewing messages for session {sessionId}
             </p>
           </div>
 
@@ -263,7 +250,6 @@ export function SessionChat({
                   : userAutoScrollManual
               }
               onCheckedChange={(v) => {
-                debugger
                 setUserAutoScrollManual(v)
                 setUserAutoScrollAutomatic(v)
               }}
@@ -307,7 +293,6 @@ export function SessionChat({
                   {messages.map((message) => {
                     return (
                       <SessionChatMessage
-                        server={server}
                         message={message}
                         key={message.info.id}
                       />

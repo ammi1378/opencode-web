@@ -780,7 +780,8 @@ export function parseContent<Configs extends ReadonlyArray<MentionConfig<any>>>(
         const id = attrs.id as string
         // const type = attrs.type as string;
         const label = attrs.label as string
-        content += `<span class="mention mention-${mentionType}" data-type="${mentionType}" data-id="${id}" data-name="${label}" >${config.trigger}${label}</span>`
+        // content += `<span class="mention mention-${mentionType}" data-type="${mentionType}" data-id="${id}" data-name="${label}" >${config.trigger}${label}</span>`
+        content += `${config.trigger}${label}`
 
         if (!mentions[mentionType]) {
           mentions[mentionType] = []

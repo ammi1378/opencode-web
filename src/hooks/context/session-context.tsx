@@ -1,5 +1,11 @@
 import { createContext } from 'react'
-import type { Agent, Config, Model, Provider } from '@/lib/api/model'
+import type {
+  Agent,
+  Config,
+  ConfigCommand,
+  Model,
+  Provider,
+} from '@/lib/api/model'
 
 export interface ISessionContext {
   context?: {
@@ -12,6 +18,7 @@ export interface ISessionContext {
       subAgents: Array<Agent>
     }
     providers?: Array<IProviderContext>
+    commands?: Array<ConfigCommand[keyof ConfigCommand] & { name: string }>
   }
   updateContext: (data: ISessionContext['context']) => void
 }

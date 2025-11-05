@@ -1,9 +1,10 @@
-import { useCallback, useContext, useRef, useState } from 'react'
+import { useCallback, useContext, useMemo, useRef, useState } from 'react'
 import {
   BotIcon,
   CheckIcon,
   ChevronsUpDownIcon,
   FactoryIcon,
+  Info,
   MoreHorizontalIcon,
 } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
@@ -25,6 +26,7 @@ import {
   CommandItem,
   CommandList,
 } from '../ui/command'
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 import type { ChatInputEditorRef } from '@/components/ui/chat-input'
 import {
   ChatInput,
@@ -35,9 +37,7 @@ import {
   createMentionConfig,
   useChatInput,
 } from '@/components/ui/chat-input'
-import { ServerContext } from '@/hooks/context/server-context'
 import {
-  getSessionGetQueryKey,
   useSessionCreate,
   useSessionGet,
   useSessionPrompt,
@@ -45,38 +45,50 @@ import {
 import { SessionContext } from '@/hooks/context/session-context'
 import { cn } from '@/lib/utils'
 
-type Member = { id: string; name: string; avatar?: string }
-const members: Array<Member> = [
-  { id: '1', name: 'Alice', avatar: '/alice.jpg' },
-  { id: '2', name: 'Bob' },
-]
+type Mention = { id: string; name: string; description?: string }
 
 export const SessionChatInput = ({ sessionId }: { sessionId?: string }) => {
   const editorRef = useRef<ChatInputEditorRef>(null)
   const { context: sessionContext, updateContext } = useContext(SessionContext)
-  const { selectedServer: server } = useContext(ServerContext)
   const { data: session } = useSessionGet(
     sessionId!,
     {},
     {
-      query: { enabled: !!server?.url && !!sessionId?.length },
-      request: { baseUrl: server?.url },
+      query: { enabled: !!sessionId?.length },
     },
   )
 
-  const navigate = useNavigate({ from: '/servers/$serverId/chat/new' })
+  const navigate = useNavigate({ from: '/chat/new' })
 
   const { mutate, mutateAsync, isPending } = useSessionPrompt({
     mutation: {},
-    request: { baseURL: server?.url },
   })
+
+  const subAgents = useMemo(() => {
+    return sessionContext?.agentsConfig?.subAgents?.map((agent) => {
+      return {
+        id: agent.name,
+        name: agent.name,
+        description: agent.description,
+      } satisfies Mention
+    })
+  }, [sessionContext])
+
+  const commands = useMemo(() => {
+    return sessionContext?.commands?.map((command) => {
+      return {
+        id: command.name,
+        name: command.name,
+        description: command.description,
+      } satisfies Mention
+    })
+  }, [sessionContext])
 
   const {
     mutateAsync: mutateCreateSessionAsync,
     isPending: isCreateSessionPending,
   } = useSessionCreate({
     mutation: {},
-    request: { baseURL: server?.url },
   })
   const {
     value: message,
@@ -84,20 +96,24 @@ export const SessionChatInput = ({ sessionId }: { sessionId?: string }) => {
     handleSubmit,
     mentionConfigs,
     clear,
+    parsed,
   } = useChatInput({
     mentions: {
-      member: createMentionConfig<Member>({
-        type: 'member',
+      agents: createMentionConfig<Mention>({
+        type: 'agents',
         trigger: '@',
-        items: members,
+        items: subAgents || [],
+      }),
+      commands: createMentionConfig<Mention>({
+        type: 'commands',
+        trigger: '/',
+        items: commands || [],
       }),
     },
     onSubmit: () => {
       submitMessage()
     },
   })
-
-  console.log({ sessionContext: sessionContext?.modelID })
 
   const createNewChat = useCallback(
     async (localMessage: string) => {
@@ -119,15 +135,16 @@ export const SessionChatInput = ({ sessionId }: { sessionId?: string }) => {
       })
 
       navigate({
-        to: '/servers/$serverId/chat/$sessionId',
+        to: '/chat/$sessionId',
         params: {
           sessionId: newSession.id,
-          serverId: server?.identifier.toString(),
         },
       })
     },
     [mutateCreateSessionAsync, mutateAsync, sessionContext, navigate],
   )
+
+  console.log({ parsed })
 
   const submitMessage = useCallback(() => {
     const message = editorRef?.current?.editor?.getText()
@@ -156,6 +173,10 @@ export const SessionChatInput = ({ sessionId }: { sessionId?: string }) => {
     ?.find((p) => p.id === sessionContext.providerID)
     ?.models?.find((m) => m.id === sessionContext.modelID)
 
+  console.log({
+    cond: parsed.content.length < 2,
+  })
+
   return (
     <ChatInput
       className="h-full!"
@@ -164,12 +185,58 @@ export const SessionChatInput = ({ sessionId }: { sessionId?: string }) => {
       onChange={onChange}
     >
       <ChatInputMention
-        type={mentionConfigs.member.type}
-        trigger={mentionConfigs.member.trigger}
-        items={mentionConfigs.member.items}
+        type={mentionConfigs.agents.type}
+        trigger={mentionConfigs.agents.trigger}
+        items={mentionConfigs.agents.items}
       >
-        {(item) => <span>{item.name}</span>}
+        {(item) => {
+          return (
+            <span
+              key={`agent:${item.name}`}
+              className="flex justify-between gap-x-2 w-full"
+            >
+              {item.name}
+              {item.description && (
+                <Tooltip>
+                  <TooltipTrigger className="text-start">
+                    <Info />
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="z-200 max-w-xs">
+                    {item.description}
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </span>
+          )
+        }}
       </ChatInputMention>
+      <ChatInputMention
+        type={mentionConfigs.commands.type}
+        trigger={mentionConfigs.commands.trigger}
+        items={mentionConfigs.commands.items}
+      >
+        {(item) => {
+          return (
+            <span
+              key={`command:${item.name}`}
+              className="flex justify-between gap-x-2 w-full"
+            >
+              {item.name}
+              {item.description && (
+                <Tooltip>
+                  <TooltipTrigger className="text-start">
+                    <Info />
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="z-200 max-w-xs">
+                    {item.description}
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </span>
+          )
+        }}
+      </ChatInputMention>
+
       <ChatInputEditor ref={editorRef} placeholder="Type @ to mention..." />
       <ChatInputGroupAddon align="block-end">
         <ButtonGroup>

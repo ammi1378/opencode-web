@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 
 // @ts-nocheck
 
@@ -9,101 +9,91 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SessionsRouteImport } from './routes/sessions'
 import { Route as ServersRouteRouteImport } from './routes/servers/route'
-import { Route as ServersIndexRouteImport } from './routes/servers/index'
-import { Route as ServersServerIdIndexRouteImport } from './routes/servers/$serverId/index'
-import { Route as ServersServerIdSessionsRouteImport } from './routes/servers/$serverId/sessions'
-import { Route as ServersServerIdChatNewRouteImport } from './routes/servers/$serverId/chat/new'
-import { Route as ServersServerIdChatSessionIdRouteImport } from './routes/servers/$serverId/chat/$sessionId'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as ChatNewRouteImport } from './routes/chat/new'
+import { Route as ChatSessionIdRouteImport } from './routes/chat/$sessionId'
 
+const SessionsRoute = SessionsRouteImport.update({
+  id: '/sessions',
+  path: '/sessions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServersRouteRoute = ServersRouteRouteImport.update({
   id: '/servers',
   path: '/servers',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ServersIndexRoute = ServersIndexRouteImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => ServersRouteRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-const ServersServerIdIndexRoute = ServersServerIdIndexRouteImport.update({
-  id: '/$serverId/',
-  path: '/$serverId/',
-  getParentRoute: () => ServersRouteRoute,
+const ChatNewRoute = ChatNewRouteImport.update({
+  id: '/chat/new',
+  path: '/chat/new',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const ServersServerIdSessionsRoute = ServersServerIdSessionsRouteImport.update({
-  id: '/$serverId/sessions',
-  path: '/$serverId/sessions',
-  getParentRoute: () => ServersRouteRoute,
+const ChatSessionIdRoute = ChatSessionIdRouteImport.update({
+  id: '/chat/$sessionId',
+  path: '/chat/$sessionId',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const ServersServerIdChatNewRoute = ServersServerIdChatNewRouteImport.update({
-  id: '/$serverId/chat/new',
-  path: '/$serverId/chat/new',
-  getParentRoute: () => ServersRouteRoute,
-} as any)
-const ServersServerIdChatSessionIdRoute =
-  ServersServerIdChatSessionIdRouteImport.update({
-    id: '/$serverId/chat/$sessionId',
-    path: '/$serverId/chat/$sessionId',
-    getParentRoute: () => ServersRouteRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
-  '/servers': typeof ServersRouteRouteWithChildren
-  '/servers/': typeof ServersIndexRoute
-  '/servers/$serverId/sessions': typeof ServersServerIdSessionsRoute
-  '/servers/$serverId': typeof ServersServerIdIndexRoute
-  '/servers/$serverId/chat/$sessionId': typeof ServersServerIdChatSessionIdRoute
-  '/servers/$serverId/chat/new': typeof ServersServerIdChatNewRoute
+  '/': typeof IndexRoute
+  '/servers': typeof ServersRouteRoute
+  '/sessions': typeof SessionsRoute
+  '/chat/$sessionId': typeof ChatSessionIdRoute
+  '/chat/new': typeof ChatNewRoute
 }
 export interface FileRoutesByTo {
-  '/servers': typeof ServersIndexRoute
-  '/servers/$serverId/sessions': typeof ServersServerIdSessionsRoute
-  '/servers/$serverId': typeof ServersServerIdIndexRoute
-  '/servers/$serverId/chat/$sessionId': typeof ServersServerIdChatSessionIdRoute
-  '/servers/$serverId/chat/new': typeof ServersServerIdChatNewRoute
+  '/': typeof IndexRoute
+  '/servers': typeof ServersRouteRoute
+  '/sessions': typeof SessionsRoute
+  '/chat/$sessionId': typeof ChatSessionIdRoute
+  '/chat/new': typeof ChatNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/servers': typeof ServersRouteRouteWithChildren
-  '/servers/': typeof ServersIndexRoute
-  '/servers/$serverId/sessions': typeof ServersServerIdSessionsRoute
-  '/servers/$serverId/': typeof ServersServerIdIndexRoute
-  '/servers/$serverId/chat/$sessionId': typeof ServersServerIdChatSessionIdRoute
-  '/servers/$serverId/chat/new': typeof ServersServerIdChatNewRoute
+  '/': typeof IndexRoute
+  '/servers': typeof ServersRouteRoute
+  '/sessions': typeof SessionsRoute
+  '/chat/$sessionId': typeof ChatSessionIdRoute
+  '/chat/new': typeof ChatNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/servers'
-    | '/servers/'
-    | '/servers/$serverId/sessions'
-    | '/servers/$serverId'
-    | '/servers/$serverId/chat/$sessionId'
-    | '/servers/$serverId/chat/new'
+  fullPaths: '/' | '/servers' | '/sessions' | '/chat/$sessionId' | '/chat/new'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/servers'
-    | '/servers/$serverId/sessions'
-    | '/servers/$serverId'
-    | '/servers/$serverId/chat/$sessionId'
-    | '/servers/$serverId/chat/new'
+  to: '/' | '/servers' | '/sessions' | '/chat/$sessionId' | '/chat/new'
   id:
     | '__root__'
+    | '/'
     | '/servers'
-    | '/servers/'
-    | '/servers/$serverId/sessions'
-    | '/servers/$serverId/'
-    | '/servers/$serverId/chat/$sessionId'
-    | '/servers/$serverId/chat/new'
+    | '/sessions'
+    | '/chat/$sessionId'
+    | '/chat/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  ServersRouteRoute: typeof ServersRouteRouteWithChildren
+  IndexRoute: typeof IndexRoute
+  ServersRouteRoute: typeof ServersRouteRoute
+  SessionsRoute: typeof SessionsRoute
+  ChatSessionIdRoute: typeof ChatSessionIdRoute
+  ChatNewRoute: typeof ChatNewRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sessions': {
+      id: '/sessions'
+      path: '/sessions'
+      fullPath: '/sessions'
+      preLoaderRoute: typeof SessionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/servers': {
       id: '/servers'
       path: '/servers'
@@ -111,66 +101,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServersRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/servers/': {
-      id: '/servers/'
+    '/': {
+      id: '/'
       path: '/'
-      fullPath: '/servers/'
-      preLoaderRoute: typeof ServersIndexRouteImport
-      parentRoute: typeof ServersRouteRoute
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/servers/$serverId/': {
-      id: '/servers/$serverId/'
-      path: '/$serverId'
-      fullPath: '/servers/$serverId'
-      preLoaderRoute: typeof ServersServerIdIndexRouteImport
-      parentRoute: typeof ServersRouteRoute
+    '/chat/new': {
+      id: '/chat/new'
+      path: '/chat/new'
+      fullPath: '/chat/new'
+      preLoaderRoute: typeof ChatNewRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/servers/$serverId/sessions': {
-      id: '/servers/$serverId/sessions'
-      path: '/$serverId/sessions'
-      fullPath: '/servers/$serverId/sessions'
-      preLoaderRoute: typeof ServersServerIdSessionsRouteImport
-      parentRoute: typeof ServersRouteRoute
-    }
-    '/servers/$serverId/chat/new': {
-      id: '/servers/$serverId/chat/new'
-      path: '/$serverId/chat/new'
-      fullPath: '/servers/$serverId/chat/new'
-      preLoaderRoute: typeof ServersServerIdChatNewRouteImport
-      parentRoute: typeof ServersRouteRoute
-    }
-    '/servers/$serverId/chat/$sessionId': {
-      id: '/servers/$serverId/chat/$sessionId'
-      path: '/$serverId/chat/$sessionId'
-      fullPath: '/servers/$serverId/chat/$sessionId'
-      preLoaderRoute: typeof ServersServerIdChatSessionIdRouteImport
-      parentRoute: typeof ServersRouteRoute
+    '/chat/$sessionId': {
+      id: '/chat/$sessionId'
+      path: '/chat/$sessionId'
+      fullPath: '/chat/$sessionId'
+      preLoaderRoute: typeof ChatSessionIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface ServersRouteRouteChildren {
-  ServersIndexRoute: typeof ServersIndexRoute
-  ServersServerIdSessionsRoute: typeof ServersServerIdSessionsRoute
-  ServersServerIdIndexRoute: typeof ServersServerIdIndexRoute
-  ServersServerIdChatSessionIdRoute: typeof ServersServerIdChatSessionIdRoute
-  ServersServerIdChatNewRoute: typeof ServersServerIdChatNewRoute
-}
-
-const ServersRouteRouteChildren: ServersRouteRouteChildren = {
-  ServersIndexRoute: ServersIndexRoute,
-  ServersServerIdSessionsRoute: ServersServerIdSessionsRoute,
-  ServersServerIdIndexRoute: ServersServerIdIndexRoute,
-  ServersServerIdChatSessionIdRoute: ServersServerIdChatSessionIdRoute,
-  ServersServerIdChatNewRoute: ServersServerIdChatNewRoute,
-}
-
-const ServersRouteRouteWithChildren = ServersRouteRoute._addFileChildren(
-  ServersRouteRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
-  ServersRouteRoute: ServersRouteRouteWithChildren,
+  IndexRoute: IndexRoute,
+  ServersRouteRoute: ServersRouteRoute,
+  SessionsRoute: SessionsRoute,
+  ChatSessionIdRoute: ChatSessionIdRoute,
+  ChatNewRoute: ChatNewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

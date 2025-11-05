@@ -18,7 +18,6 @@ import {
   assertToolTask,
   assertToolWrite
 } from '@/lib/util/task-type-assertion'
-import { ServerContext } from '@/hooks/context/server-context'
 import { Button } from '@/components/ui/button'
 
 interface ToolPartProps {
@@ -172,25 +171,23 @@ export function ToolPart({ part }: ToolPartProps) {
 }
 
 export function TaskToolPart({ part }: { part: ITaskToolPart }) {
-  const {selectedServer: server} = useContext(ServerContext)
 
   const childSessionTask =
     (part.state.status === 'completed' || part.state.status === 'running') &&
-    (part.state.metadata.sessionId ||
+    (part.state.metadata?.sessionId ||
       part.state?.metadata?.summary?.find((i) => i.sessionID)?.sessionID)
 
   return (
     <div className="relative">
-      {childSessionTask && server ? (
+      {childSessionTask  ? (
         <Button
           variant={'ghost'}
           className="absolute top-0 right-0 -translate-y-full"
           asChild
         >
           <Link
-            to="/servers/$serverId/chat/$sessionId"
+            to="/chat/$sessionId"
             params={{
-              serverId: server.identifier.toString(),
               sessionId: childSessionTask,
             }}
           >

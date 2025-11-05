@@ -1,87 +1,42 @@
 'use client'
 
-import { useCallback, useContext, useEffect } from 'react'
-import {
-  ArchiveX,
-  ChevronRight,
-  Command,
-  File,
-  Inbox,
-  Plus,
-  Send,
-  Trash2,
-} from 'lucide-react'
+import { useCallback } from 'react'
+import { Plus } from 'lucide-react'
 
-import { Link, useMatch, useMatches, useNavigate } from '@tanstack/react-router'
-import type { FileRouteTypes } from '@/routeTree.gen'
-import { Label } from '@/components/ui/label'
+import { Link, useNavigate } from '@tanstack/react-router'
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
-  SidebarInput,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-  useSidebar,
 } from '@/components/ui/sidebar'
-import { Switch } from '@/components/ui/switch'
-import { useServers } from '@/lib/servers/hooks'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
-import { cn } from '@/lib/utils'
-import { ServerContext } from '@/hooks/context/server-context'
+
 import { useSessionCreate, useSessionList } from '@/lib/api/default/default'
 import { Button } from '@/components/ui/button'
 
 export function SessionSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
-  const matchIsSessionChatPage = useMatch({
-    from: '/servers/$serverId/chat/$sessionId',
-    shouldThrow: false,
-  })
-  const { selectedServer: server } = useContext(ServerContext)
-  const { data: sessions } = useSessionList(
-    {},
-    {
-      query: {
-        enabled: !!server?.url?.length,
-      },
-      request: {
-        baseUrl: server?.url,
-      },
-    },
-  )
+  const { data: sessions } = useSessionList({})
   const navigate = useNavigate()
 
-  console.log({ sessions, server })
   const { mutateAsync: mutateCreateSessionAsync } = useSessionCreate({
     mutation: {},
-    request: { baseURL: server?.url },
   })
   const createNewChat = useCallback(async () => {
-    if (!server) return
     const newSession = await mutateCreateSessionAsync({
       data: {},
     })
 
     navigate({
-      to: '/servers/$serverId/chat/$sessionId',
+      to: '/chat/$sessionId',
       params: {
         sessionId: newSession.id,
-        serverId: server?.identifier.toString(),
       },
     })
   }, [mutateCreateSessionAsync, navigate])
@@ -106,9 +61,8 @@ export function SessionSidebar({
                 <SidebarMenuItem key={session.id}>
                   <SidebarMenuButton className="h-auto" asChild>
                     <Link
-                      to="/servers/$serverId/chat/$sessionId"
+                      to="/chat/$sessionId"
                       params={{
-                        serverId: server?.identifier?.toString()!,
                         sessionId: session.id,
                       }}
                       key={session.id}

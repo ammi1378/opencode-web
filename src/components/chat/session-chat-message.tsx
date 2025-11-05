@@ -1,6 +1,5 @@
 import { MessageSquare } from 'lucide-react'
 import { SessionChatMessagePart } from './session-chat-message-part'
-import type { Server } from '@/lib/servers/types'
 import type { SessionMessage200 } from '@/lib/api/model'
 import {
   Card,
@@ -12,7 +11,6 @@ import {
 
 interface SessionChatMessageProps {
   message: SessionMessage200
-  server: Server | undefined
 }
 
 export function SessionChatMessage({ message }: SessionChatMessageProps) {

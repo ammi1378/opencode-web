@@ -1,27 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { RefreshCw } from 'lucide-react'
-import { useContext, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { SessionList } from '@/components/sessions/session-list'
-import { ServerContext } from '@/hooks/context/server-context'
 
-export const Route = createFileRoute('/servers/$serverId/sessions')({
+export const Route = createFileRoute('/sessions')({
   component: ServerSessionsPage,
 })
 
 function ServerSessionsPage() {
-  const { serverId } = Route.useParams()
-  const { setSelectedServer, selectedServer, servers } =
-    useContext(ServerContext)
-
-  useEffect(() => {
-    const server = servers?.find((s) => s.identifier === parseInt(serverId))
-    setSelectedServer && setSelectedServer(server)
-  }, [serverId, servers])
-
-  if (!selectedServer) {
-    return undefined
-  }
 
 
   return (
@@ -30,7 +16,7 @@ function ServerSessionsPage() {
         <div>
           <h2 className="text-2xl font-bold">Sessions</h2>
           <p className="text-muted-foreground">
-            Manage and view chat sessions for {selectedServer.name}
+            Manage and view chat sessions
           </p>
         </div>
         <Button
@@ -45,7 +31,7 @@ function ServerSessionsPage() {
         </Button>
       </div>
 
-      <SessionList server={selectedServer} />
+      <SessionList />
     </div>
   )
 }

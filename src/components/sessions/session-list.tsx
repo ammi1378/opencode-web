@@ -1,6 +1,5 @@
 import { Clock, ExternalLink, Folder, MessageSquare } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
-import { useEffect } from 'react'
 import type { Server } from '@/lib/servers/types'
 import { Button } from '@/components/ui/button'
 import {
@@ -82,8 +81,6 @@ export function SessionList({ server }: SessionListProps) {
     )
   }
 
-  console.log({ sessions })
-
   return (
     <div className="grid gap-4">
       {sessions
@@ -133,9 +130,8 @@ export function SessionList({ server }: SessionListProps) {
                 <div className="flex space-x-2">
                   {server && (
                     <Link
-                      to="/servers/$serverId/chat/$sessionId"
+                      to="/chat/$sessionId"
                       params={{
-                        serverId: server.identifier.toString(),
                         sessionId: session.id,
                       }}
                     >

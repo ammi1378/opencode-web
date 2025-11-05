@@ -8,8 +8,6 @@ import type {
 } from '@/hooks/context/session-context'
 import { Button } from '@/components/ui/button'
 import { SessionChat } from '@/components/chat/session-chat'
-import { ServerContext } from '@/hooks/context/server-context'
-import { useSSEStream } from '@/hooks/use-event-subscibe'
 import { SessionChatInput } from '@/components/chat/session-chat-input'
 import { SessionContext } from '@/hooks/context/session-context'
 import {
@@ -18,38 +16,15 @@ import {
   useConfigProviders,
 } from '@/lib/api/default/default'
 
-export const Route = createFileRoute('/servers/$serverId/chat/new')({
+export const Route = createFileRoute('/chat/new')({
   component: SessionChatPage,
 })
 
 function SessionChatPage() {
-  const { serverId } = Route.useParams()
-  const {
-    selectedServer: server,
-    servers,
-    setSelectedServer,
-  } = useContext(ServerContext)
+  const { data: config } = useConfigGet({})
+  const { data: providersData } = useConfigProviders({})
 
-  useEffect(() => {
-    const localServer = servers?.find(
-      (s) => s.identifier === parseInt(serverId),
-    )
-    setSelectedServer && setSelectedServer(localServer)
-  }, [serverId, servers])
-
-  const { data: config } = useConfigGet(
-    {},
-    { query: { enabled: !!server?.url }, request: { baseUrl: server?.url } },
-  )
-  const { data: providersData } = useConfigProviders(
-    {},
-    { query: { enabled: !!server?.url }, request: { baseUrl: server?.url } },
-  )
-
-  const { data: agents } = useAppAgents(
-    {},
-    { query: { enabled: !!server?.url }, request: { baseUrl: server?.url } },
-  )
+  const { data: agents } = useAppAgents({})
 
   const [sessionContext, setSessionContext] =
     useState<ISessionContext['context']>()
@@ -96,25 +71,6 @@ function SessionChatPage() {
     (i) => !!i?.models?.filter((i) => i.id === config?.model)?.length,
   )
 
-
-
-  if (!server) {
-    return (
-      <div className="text-center py-8">
-        <h2 className="text-2xl font-bold mb-4">Server Not Found</h2>
-        <p className="text-muted-foreground mb-6">
-          The server with identifier {serverId} could not be found.
-        </p>
-        <Link to="/servers">
-          <Button variant="outline">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Servers
-          </Button>
-        </Link>
-      </div>
-    )
-  }
-
   return (
     <SessionContext
       value={{
@@ -137,7 +93,7 @@ function SessionChatPage() {
             <div className="container mx-auto relative s">
               <div className="flex items-center justify-between sticky top-0 bg-white py-3 border-b mb-2 z-10">
                 <div className="flex items-center space-x-4">
-                  <Link to="/servers/$serverId/sessions" params={{ serverId }}>
+                  <Link to="/sessions">
                     <Button variant="outline" size="sm">
                       <ArrowLeft className="mr-2 h-4 w-4" />
                       Back to Sessions
@@ -145,13 +101,11 @@ function SessionChatPage() {
                   </Link>
                   <div>
                     <h2 className="text-2xl font-bold">New Chat</h2>
-                    <p className="text-muted-foreground">
-                      Start a new chat on {server.name}
-                    </p>
+                    <p className="text-muted-foreground">Start a new chat</p>
                   </div>
                 </div>
               </div>
-              <SessionChat server={server} hideAccordionUi />
+              <SessionChat hideAccordionUi />
             </div>
             <div className="bg-linear-to-t from-white to-transparent h-8 absolute bottom-0 w-full"></div>
           </div>

@@ -1,25 +1,14 @@
 'use client'
 
 import * as React from 'react'
-import {
-  ArchiveX,
-  Command,
-  File,
-  FolderKanban,
-  Inbox,
-  Send,
-  Trash2,
-} from 'lucide-react'
+import { Command, FolderKanban } from 'lucide-react'
 
-import { Link, useMatch, useMatches } from '@tanstack/react-router'
-import { NavUser } from './nav-user'
-import { ServerSidebar } from './sidebars/server-sidebar'
+import { Link, useMatches } from '@tanstack/react-router'
 import { SessionSidebar } from './sidebars/session-sidebar'
 import type { FileRouteTypes } from '@/routeTree.gen'
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -32,23 +21,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const matches = useMatches()
 
   const currentMatch = matches.at(-1)
-  const isServerAddress = (
+
+  const isSessionAddress = (
     [
-      '/servers',
-      '/servers/$serverId/',
-      '/servers/',
-      '/servers/$serverId/sessions',
+      '/chat/$sessionId',
+      '/chat/new',
     ] as Array<FileRouteTypes['fullPaths']>
   ).some((p) => p === currentMatch?.fullPath)
-
-    const isSessionAddress = (
-    [
-      '/servers/$serverId/chat/$sessionId',
-      '/servers/$serverId/chat/new',
-      
-    ] as Array<FileRouteTypes['fullPaths']>
-  ).some((p) => p === currentMatch?.fullPath)
-
 
   return (
     <Sidebar
@@ -102,7 +81,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarContent>
       </Sidebar>
 
-      {isServerAddress && <ServerSidebar />}
       {isSessionAddress && <SessionSidebar />}
     </Sidebar>
   )

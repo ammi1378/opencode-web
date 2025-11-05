@@ -1,14 +1,11 @@
-import { Link, createFileRoute } from '@tanstack/react-router'
-import { ArrowLeft } from 'lucide-react'
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { createFileRoute } from '@tanstack/react-router'
+import { useMemo, useState } from 'react'
 import type { Agent } from '@/lib/api/model'
 import type {
   IProviderContext,
   ISessionContext,
 } from '@/hooks/context/session-context'
-import { Button } from '@/components/ui/button'
 import { SessionChat } from '@/components/chat/session-chat'
-import { ServerContext } from '@/hooks/context/server-context'
 import { useSSEStream } from '@/hooks/use-event-subscibe'
 import { SessionChatInput } from '@/components/chat/session-chat-input'
 import { SessionContext } from '@/hooks/context/session-context'
@@ -18,43 +15,28 @@ import {
   useConfigProviders,
 } from '@/lib/api/default/default'
 
-export const Route = createFileRoute('/servers/$serverId/chat/$sessionId')({
+export const Route = createFileRoute('/chat/$sessionId')({
   component: SessionChatPage,
 })
 
 function SessionChatPage() {
-  const { serverId, sessionId } = Route.useParams()
-  const {
-    selectedServer: server,
-    servers,
-    setSelectedServer,
-  } = useContext(ServerContext)
-  useEffect(() => {
-    const localServer = servers?.find(
-      (s) => s.identifier === parseInt(serverId),
-    )
-    setSelectedServer && setSelectedServer(localServer)
-  }, [serverId, servers])
+  const { sessionId } = Route.useParams()
+
 
   useSSEStream({
-    endpoint: `${server?.url}/event`,
+    endpoint: `servertodo/event`,
     queryKey: ['activity-log'],
     maxItems: 100,
-    enabled: !!server,
-    // directory: '/Users/ammi1378/Documents/Personal/opencode-ui',
   })
   const { data: config } = useConfigGet(
     {},
-    { query: { enabled: !!server?.url }, request: { baseUrl: server?.url } },
   )
   const { data: providersData } = useConfigProviders(
     {},
-    { query: { enabled: !!server?.url }, request: { baseUrl: server?.url } },
   )
 
   const { data: agents } = useAppAgents(
     {},
-    { query: { enabled: !!server?.url }, request: { baseUrl: server?.url } },
   )
 
   const [sessionContext, setSessionContext] =
@@ -98,22 +80,17 @@ function SessionChatPage() {
     return providers
   }, [providersData])
 
-  if (!server) {
-    return (
-      <div className="text-center py-8">
-        <h2 className="text-2xl font-bold mb-4">Server Not Found</h2>
-        <p className="text-muted-foreground mb-6">
-          The server with identifier {serverId} could not be found.
-        </p>
-        <Link to="/servers">
-          <Button variant="outline">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Servers
-          </Button>
-        </Link>
-      </div>
-    )
-  }
+  const commandsConfig = useMemo(() => {
+    if (!config?.command) {
+      return []
+    }
+    const commands = Object.keys(config.command).map((command) => {
+      return { ...config.command![command], name: command }
+    })
+
+    return commands
+  }, [config])
+
 
   return (
     <SessionContext
@@ -122,6 +99,7 @@ function SessionChatPage() {
           config,
           agentsConfig: agentsConfig,
           providers: providersConfig,
+          commands: commandsConfig,
           ...sessionContext,
         },
         updateContext: (context) =>
@@ -130,7 +108,7 @@ function SessionChatPage() {
     >
       <div className="flex flex-col h-full overflow-hidden space-y-2">
         <div className="overflow-hidden grow relative">
-          <SessionChat server={server} sessionId={sessionId} hideAccordionUi />
+          <SessionChat sessionId={sessionId} hideAccordionUi />
         </div>
 
         <div className="container mx-auto min-h-48">
