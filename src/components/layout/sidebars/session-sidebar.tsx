@@ -3,7 +3,7 @@
 import { useCallback } from 'react'
 import { Plus } from 'lucide-react'
 
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link, useMatch, useNavigate } from '@tanstack/react-router'
 import {
   Sidebar,
   SidebarContent,
@@ -28,6 +28,9 @@ export function SessionSidebar({
   const { mutateAsync: mutateCreateSessionAsync } = useSessionCreate({
     mutation: {},
   })
+
+  const sessionMatch = useMatch({from: '/chat/$sessionId', shouldThrow: false})
+  
   const createNewChat = useCallback(async () => {
     const newSession = await mutateCreateSessionAsync({
       data: {},
@@ -58,8 +61,8 @@ export function SessionSidebar({
           <SidebarGroupContent>
             <SidebarMenu>
               {sessions?.map((session) => (
-                <SidebarMenuItem key={session.id}>
-                  <SidebarMenuButton className="h-auto" asChild>
+                <SidebarMenuItem  key={session.id}>
+                  <SidebarMenuButton className="h-auto" asChild isActive={sessionMatch?.params.sessionId === session.id}>
                     <Link
                       to="/chat/$sessionId"
                       params={{
@@ -73,14 +76,13 @@ export function SessionSidebar({
                           {session.title}
                         </span>{' '}
                         <span className="ml-auto text-xs">
-                          {new Date(session.time.created).toLocaleTimeString(
-                            undefined,
-                            {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              hour12: false,
-                            },
-                          )}
+                          {new Date(
+                            session.time.updated ?? session.time.created,
+                          ).toLocaleTimeString(undefined, {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: false,
+                          })}
                         </span>
                       </div>
                       <span className="font-medium">{session.directory}</span>

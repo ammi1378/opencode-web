@@ -144,7 +144,6 @@ export const SessionChatInput = ({ sessionId }: { sessionId?: string }) => {
     [mutateCreateSessionAsync, mutateAsync, sessionContext, navigate],
   )
 
-  console.log({ parsed })
 
   const submitMessage = useCallback(() => {
     const message = editorRef?.current?.editor?.getText()
@@ -172,10 +171,6 @@ export const SessionChatInput = ({ sessionId }: { sessionId?: string }) => {
   const selectedModel = sessionContext?.providers
     ?.find((p) => p.id === sessionContext.providerID)
     ?.models?.find((m) => m.id === sessionContext.modelID)
-
-  console.log({
-    cond: parsed.content.length < 2,
-  })
 
   return (
     <ChatInput

@@ -1,12 +1,18 @@
 // hooks/useSSEStream.ts
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { Event, SessionMessages200Item } from '@/lib/api/model'
+import type { Event, Session, SessionMessages200Item } from '@/lib/api/model'
 import {
   getEventSubscribeQueryKey,
+  getSessionListQueryKey,
+  getSessionListQueryOptions,
   getSessionMessagesQueryKey,
 } from '@/lib/api/default/default'
-import { upsertMessagPart, upsertMessage } from '@/lib/update-center'
+import {
+  upsertMessagPart,
+  upsertMessage,
+  upsertSession,
+} from '@/lib/update-center'
 
 interface UseSSEStreamOptions {
   directory?: string
@@ -184,9 +190,20 @@ export function useSSEStream<T = any>({
               }
             },
           )
-        } else if (ocEvent.type === 'session.created') {
-            // console.log({});
-            
+        }  else if (ocEvent.type === 'session.updated' || ocEvent.type === 'session.created' ) {
+          queryClient.setQueryData(
+            getSessionListQueryKey({}),
+            (val: Session[] | undefined) => {
+              const newState = upsertSession(val, ocEvent)
+              if (!newState) {
+                onholdEvents.push(ocEvent)
+              }
+
+              return newState
+            },
+          )
+          getSessionListQueryOptions({})
+          console.log('session.updated', ocEvent)
         }
       })
 

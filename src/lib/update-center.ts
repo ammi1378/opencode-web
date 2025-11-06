@@ -1,9 +1,35 @@
 import type {
   EventMessagePartUpdated,
   EventMessageUpdated,
+  EventSessionCreated,
+  EventSessionUpdated,
+  Session,
   SessionMessages200Item,
   TextPart,
 } from './api/model'
+
+export function upsertSession(
+  sessions: Array<Session> | undefined,
+  newSession: EventSessionCreated | EventSessionUpdated,
+): Array<Session> {
+  const newSessions = sessions ? [...sessions] : []
+
+  if (newSession.type === 'session.created') {
+    newSessions.unshift(newSession.properties.info)
+    return newSessions
+  } 
+
+  for (let i = 0; i < newSessions.length; i++) {
+    const currentSession = newSessions[i]
+    if (currentSession.id === newSession.properties.info.id) {
+      newSessions[i] = newSession.properties.info
+      return newSessions
+    }
+  }
+
+
+  return newSessions
+}
 
 export function upsertMessage(
   messages: Array<SessionMessages200Item>,
