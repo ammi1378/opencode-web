@@ -8,6 +8,4 @@
 
 export type SessionUpdateParams = {
   directory?: string
-  directory?: string
-  directory?: string
 }

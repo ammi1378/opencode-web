@@ -9,6 +9,6 @@ import type { ModelModalitiesInputItem } from './modelModalitiesInputItem'
 import type { ModelModalitiesOutputItem } from './modelModalitiesOutputItem'
 
 export type ModelModalities = {
-  input: Array<ModelModalitiesInputItem>
-  output: Array<ModelModalitiesOutputItem>
+  input: ModelModalitiesInputItem[]
+  output: ModelModalitiesOutputItem[]
 }

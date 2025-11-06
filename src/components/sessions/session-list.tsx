@@ -1,6 +1,5 @@
 import { Clock, ExternalLink, Folder, MessageSquare } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
-import type { Server } from '@/lib/servers/types'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -11,26 +10,10 @@ import {
 } from '@/components/ui/card'
 import { useSessionList } from '@/lib/api/default/default'
 
-interface SessionListProps {
-  server?: Server
-}
+interface SessionListProps {}
 
-export function SessionList({ server }: SessionListProps) {
-  const {
-    data: sessions,
-    isLoading,
-    error,
-  } = useSessionList(
-    {},
-    {
-      query: {
-        enabled: !!server?.url?.length,
-      },
-      request: {
-        baseUrl: server?.url,
-      },
-    },
-  )
+export function SessionList({}: SessionListProps) {
+  const { data: sessions, isLoading, error } = useSessionList({})
 
   if (isLoading) {
     return (
@@ -74,7 +57,7 @@ export function SessionList({ server }: SessionListProps) {
           <MessageSquare className="mx-auto h-12 w-12 text-muted-foreground" />
           <CardTitle>No Sessions Found</CardTitle>
           <CardDescription>
-            There are no chat sessions available for this server.
+            There are no chat sessions available.
           </CardDescription>
         </CardHeader>
       </Card>
@@ -128,7 +111,6 @@ export function SessionList({ server }: SessionListProps) {
                   </CardDescription>
                 </div>
                 <div className="flex space-x-2">
-                  {server && (
                     <Link
                       to="/chat/$sessionId"
                       params={{
@@ -139,7 +121,6 @@ export function SessionList({ server }: SessionListProps) {
                         View Chat
                       </Button>
                     </Link>
-                  )}
                   {session.share && (
                     <Button variant="outline" size="sm" asChild>
                       <a

@@ -23,21 +23,10 @@ function SessionChatPage() {
   const { sessionId } = Route.useParams()
 
 
-  useSSEStream({
-    endpoint: `servertodo/event`,
-    queryKey: ['activity-log'],
-    maxItems: 100,
-  })
-  const { data: config } = useConfigGet(
-    {},
-  )
-  const { data: providersData } = useConfigProviders(
-    {},
-  )
+  const { data: config } = useConfigGet({})
+  const { data: providersData } = useConfigProviders({})
 
-  const { data: agents } = useAppAgents(
-    {},
-  )
+  const { data: agents } = useAppAgents({})
 
   const [sessionContext, setSessionContext] =
     useState<ISessionContext['context']>()
@@ -90,7 +79,6 @@ function SessionChatPage() {
 
     return commands
   }, [config])
-
 
   return (
     <SessionContext

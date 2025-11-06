@@ -9,5 +9,5 @@ import type { Todo } from './todo'
 
 export type EventTodoUpdatedProperties = {
   sessionID: string
-  todos: Array<Todo>
+  todos: Todo[]
 }

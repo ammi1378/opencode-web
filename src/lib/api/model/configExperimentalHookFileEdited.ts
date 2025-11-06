@@ -8,5 +8,5 @@
 import type { ConfigExperimentalHookFileEditedItem } from './configExperimentalHookFileEditedItem'
 
 export type ConfigExperimentalHookFileEdited = {
-  [key: string]: Array<ConfigExperimentalHookFileEditedItem>
+  [key: string]: ConfigExperimentalHookFileEditedItem[]
 }

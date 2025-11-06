@@ -8,5 +8,4 @@
 
 export type SessionAbortParams = {
   directory?: string
-  directory?: string
 }

@@ -9,7 +9,7 @@
 export type TuiShowToastBodyVariant =
   (typeof TuiShowToastBodyVariant)[keyof typeof TuiShowToastBodyVariant]
 
- 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const TuiShowToastBodyVariant = {
   info: 'info',
   success: 'success',

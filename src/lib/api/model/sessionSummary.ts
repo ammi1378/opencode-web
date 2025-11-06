@@ -8,5 +8,7 @@
 import type { FileDiff } from './fileDiff'
 
 export type SessionSummary = {
-  diffs: Array<FileDiff>
+  additions: number
+  deletions: number
+  diffs?: FileDiff[]
 }

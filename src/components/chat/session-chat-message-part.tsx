@@ -18,7 +18,7 @@ export function SessionChatMessagePart({ part }: SessionChatMessagePartProps) {
     return <ToolPart part={part} />
   } else if (part.type === 'patch') {
     return <PatchPart part={part} />
-  } else if (part.type === 'reasoning') {
+  } else if (part.type === 'reasoning' && part.text?.length) {
     return (
       <div className="">
         Resoning:

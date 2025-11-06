@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
 import { AppSidebar } from '@/components/layout/app-sidebar'
+import { useSSEStream } from '@/hooks/use-event-subscibe'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -17,6 +18,11 @@ interface MyRouterContext {
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => {
+      useSSEStream({
+        endpoint: `http://0.0.0.0:56050/event`,
+        queryKey: ['activity-log'],
+        maxItems: 100,
+      })
     return (
       <SidebarProvider
         style={

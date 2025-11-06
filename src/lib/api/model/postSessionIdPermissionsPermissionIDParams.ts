@@ -8,6 +8,4 @@
 
 export type PostSessionIdPermissionsPermissionIDParams = {
   directory?: string
-  directory?: string
-  directory?: string
 }

@@ -23,10 +23,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const currentMatch = matches.at(-1)
 
   const isSessionAddress = (
-    [
-      '/chat/$sessionId',
-      '/chat/new',
-    ] as Array<FileRouteTypes['fullPaths']>
+    ['/chat/$sessionId', '/chat/new'] as Array<FileRouteTypes['fullPaths']>
   ).some((p) => p === currentMatch?.fullPath)
 
   return (
@@ -59,7 +56,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupContent className="px-1.5 md:px-0">
-              <SidebarMenu>
+              {/* <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     tooltip={{
@@ -75,7 +72,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              </SidebarMenu>
+              </SidebarMenu> */}
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>

@@ -11,5 +11,5 @@ export type FileContentPatchHunksItem = {
   oldLines: number
   newStart: number
   newLines: number
-  lines: Array<string>
+  lines: string[]
 }

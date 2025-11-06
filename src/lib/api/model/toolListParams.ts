@@ -8,7 +8,6 @@
 
 export type ToolListParams = {
   directory?: string
-  directory?: string
   provider: string
   model: string
 }

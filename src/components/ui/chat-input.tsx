@@ -8,8 +8,6 @@ import StarterKit from '@tiptap/starter-kit'
 import { ArrowUpIcon, Loader2 } from 'lucide-react'
 
 import {
-  
-  
   createContext,
   forwardRef,
   useCallback,
@@ -18,11 +16,11 @@ import {
   useImperativeHandle,
   useMemo,
   useRef,
-  useState
+  useState,
 } from 'react'
 import tippy from 'tippy.js'
-import type {ComponentProps, ReactNode} from 'react';
-import type {Instance} from 'tippy.js';
+import type { ComponentProps, ReactNode } from 'react'
+import type { Instance } from 'tippy.js'
 import type { SuggestionProps } from '@tiptap/suggestion'
 import type { Editor, Extensions, JSONContent } from '@tiptap/react'
 import { Button } from '@/components/ui/button'
@@ -97,7 +95,9 @@ export function ChatInput({
   value?: ChatInputValue
   onChange?: (value: ChatInputValue) => void
 }) {
-  const [mentionConfigs, setMentionConfigs] = useState<Array<MentionConfig<any>>>([])
+  const [mentionConfigs, setMentionConfigs] = useState<
+    Array<MentionConfig<any>>
+  >([])
 
   const registeredTypesRef = useRef(new Set<string>())
 
@@ -507,6 +507,7 @@ function getMentionSuggestion<T extends BaseMentionItem>(
             interactive: true,
             trigger: 'manual',
             placement: 'bottom-start',
+            zIndex: 50
           })
         },
         onUpdate: (props: SuggestionProps<T>) => {
@@ -750,7 +751,9 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   : never
 
 type ConfigToField<Config extends MentionConfig<any>> =
-  Config extends MentionConfig<infer T> ? { [K in Config['type']]: Array<T> } : never
+  Config extends MentionConfig<infer T>
+    ? { [K in Config['type']]: Array<T> }
+    : never
 
 export type ParsedChatInputValue<
   Configs extends ReadonlyArray<MentionConfig<any>>,

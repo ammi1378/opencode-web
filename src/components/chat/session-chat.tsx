@@ -79,7 +79,7 @@ export function SessionChat({
 
   const scrollChat = useCallback(() => {
     if (!scrollableContainerRef?.current) return
- 
+
     let shouldScroll = false
     if (userAutoScrollManual !== undefined) {
       shouldScroll = userAutoScrollManual

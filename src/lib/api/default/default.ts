@@ -6,7 +6,6 @@
  * OpenAPI spec version: 0.0.3
  */
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { customInstance } from '.././custom-instance'
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -125,7 +124,8 @@ import type {
   TuiSubmitPromptParams,
 } from '.././model'
 
-import type { BodyType, ErrorType } from '.././custom-instance'
+import { customInstance } from '.././custom-instance'
+import type { ErrorType, BodyType } from '.././custom-instance'
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 
@@ -137,7 +137,7 @@ export const projectList = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<Array<Project>>(
+  return customInstance<Project[]>(
     { url: `/project`, method: 'GET', params, signal },
     options,
   )
@@ -1059,7 +1059,7 @@ export const sessionList = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<Array<Session>>(
+  return customInstance<Session[]>(
     { url: `/session`, method: 'GET', params, signal },
     options,
   )
@@ -1637,7 +1637,7 @@ export const sessionChildren = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<Array<Session>>(
+  return customInstance<Session[]>(
     { url: `/session/${id}/children`, method: 'GET', params, signal },
     options,
   )
@@ -1813,7 +1813,7 @@ export const sessionTodo = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<Array<Todo>>(
+  return customInstance<Todo[]>(
     { url: `/session/${id}/todo`, method: 'GET', params, signal },
     options,
   )
@@ -2401,7 +2401,7 @@ export const useSessionUnshare = <
   return useMutation(mutationOptions, queryClient)
 }
 /**
- * Get the diff that resulted from this user message
+ * Get the diff for this session
  */
 export const sessionDiff = (
   id: string,
@@ -2409,7 +2409,7 @@ export const sessionDiff = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<Array<FileDiff>>(
+  return customInstance<FileDiff[]>(
     { url: `/session/${id}/diff`, method: 'GET', params, signal },
     options,
   )
@@ -2424,7 +2424,7 @@ export const getSessionDiffQueryKey = (
 
 export const getSessionDiffQueryOptions = <
   TData = Awaited<ReturnType<typeof sessionDiff>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<BadRequestError | NotFoundError>,
 >(
   id: string,
   params?: SessionDiffParams,
@@ -2458,11 +2458,11 @@ export const getSessionDiffQueryOptions = <
 export type SessionDiffQueryResult = NonNullable<
   Awaited<ReturnType<typeof sessionDiff>>
 >
-export type SessionDiffQueryError = ErrorType<unknown>
+export type SessionDiffQueryError = ErrorType<BadRequestError | NotFoundError>
 
 export function useSessionDiff<
   TData = Awaited<ReturnType<typeof sessionDiff>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<BadRequestError | NotFoundError>,
 >(
   id: string,
   params: undefined | SessionDiffParams,
@@ -2486,7 +2486,7 @@ export function useSessionDiff<
 }
 export function useSessionDiff<
   TData = Awaited<ReturnType<typeof sessionDiff>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<BadRequestError | NotFoundError>,
 >(
   id: string,
   params?: SessionDiffParams,
@@ -2510,7 +2510,7 @@ export function useSessionDiff<
 }
 export function useSessionDiff<
   TData = Awaited<ReturnType<typeof sessionDiff>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<BadRequestError | NotFoundError>,
 >(
   id: string,
   params?: SessionDiffParams,
@@ -2527,7 +2527,7 @@ export function useSessionDiff<
 
 export function useSessionDiff<
   TData = Awaited<ReturnType<typeof sessionDiff>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<BadRequestError | NotFoundError>,
 >(
   id: string,
   params?: SessionDiffParams,
@@ -2675,7 +2675,7 @@ export const sessionMessages = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<Array<SessionMessages200Item>>(
+  return customInstance<SessionMessages200Item[]>(
     { url: `/session/${id}/message`, method: 'GET', params, signal },
     options,
   )
@@ -3682,7 +3682,7 @@ export const commandList = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<Array<Command>>(
+  return customInstance<Command[]>(
     { url: `/command`, method: 'GET', params, signal },
     options,
   )
@@ -3980,7 +3980,7 @@ export const findText = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<Array<FindText200Item>>(
+  return customInstance<FindText200Item[]>(
     { url: `/find`, method: 'GET', params, signal },
     options,
   )
@@ -4119,7 +4119,7 @@ export const findFiles = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<Array<string>>(
+  return customInstance<string[]>(
     { url: `/find/file`, method: 'GET', params, signal },
     options,
   )
@@ -4258,7 +4258,7 @@ export const findSymbols = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<Array<Symbol>>(
+  return customInstance<Symbol[]>(
     { url: `/find/symbol`, method: 'GET', params, signal },
     options,
   )
@@ -4397,7 +4397,7 @@ export const fileList = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<Array<FileNode>>(
+  return customInstance<FileNode[]>(
     { url: `/file`, method: 'GET', params, signal },
     options,
   )
@@ -4675,7 +4675,7 @@ export const fileStatus = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<Array<File>>(
+  return customInstance<File[]>(
     { url: `/file/status`, method: 'GET', params, signal },
     options,
   )
@@ -4904,7 +4904,7 @@ export const appAgents = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<Array<Agent>>(
+  return customInstance<Agent[]>(
     { url: `/agent`, method: 'GET', params, signal },
     options,
   )
@@ -5182,7 +5182,7 @@ export const lspStatus = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<Array<LSPStatus>>(
+  return customInstance<LSPStatus[]>(
     { url: `/lsp`, method: 'GET', params, signal },
     options,
   )
@@ -5321,7 +5321,7 @@ export const formatterStatus = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<Array<FormatterStatus>>(
+  return customInstance<FormatterStatus[]>(
     { url: `/formatter`, method: 'GET', params, signal },
     options,
   )

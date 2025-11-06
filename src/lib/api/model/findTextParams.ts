@@ -8,6 +8,5 @@
 
 export type FindTextParams = {
   directory?: string
-  directory?: string
   pattern: string
 }

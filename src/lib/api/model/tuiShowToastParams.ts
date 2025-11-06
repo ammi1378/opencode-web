@@ -8,5 +8,4 @@
 
 export type TuiShowToastParams = {
   directory?: string
-  directory?: string
 }

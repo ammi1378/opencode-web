@@ -10,7 +10,7 @@ import type { ProviderModels } from './providerModels'
 export interface Provider {
   api?: string
   name: string
-  env: Array<string>
+  env: string[]
   id: string
   npm?: string
   models: ProviderModels

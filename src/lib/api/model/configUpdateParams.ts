@@ -8,5 +8,4 @@
 
 export type ConfigUpdateParams = {
   directory?: string
-  directory?: string
 }

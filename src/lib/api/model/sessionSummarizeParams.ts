@@ -8,6 +8,4 @@
 
 export type SessionSummarizeParams = {
   directory?: string
-  directory?: string
-  directory?: string
 }

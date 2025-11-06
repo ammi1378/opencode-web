@@ -8,5 +8,4 @@
 
 export type TuiExecuteCommandParams = {
   directory?: string
-  directory?: string
 }

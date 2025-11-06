@@ -84,6 +84,10 @@ export interface KeybindsConfig {
   input_newline?: string
   /** Previous history item */
   history_previous?: string
-  /** Previous history item */
+  /** Next history item */
   history_next?: string
+  /** Next child session */
+  session_child_cycle?: string
+  /** Previous child session */
+  session_child_cycle_reverse?: string
 }

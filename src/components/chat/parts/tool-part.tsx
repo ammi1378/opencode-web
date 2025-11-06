@@ -7,16 +7,17 @@ import { dracula } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 import ReactDiffViewer from 'react-diff-viewer'
 import Markdown from 'react-markdown'
 import type { ToolPart } from '@/lib/api/model'
-import type {GenericCompleteStateTask, ITaskToolPart} from '@/lib/util/task-type-assertion';
+import type {
+  GenericCompleteStateTask,
+  ITaskToolPart,
+} from '@/lib/util/task-type-assertion'
 import {
-  
-  
   assertToolBash,
   assertToolEdit,
   assertToolGlob,
   assertToolRead,
   assertToolTask,
-  assertToolWrite
+  assertToolWrite,
 } from '@/lib/util/task-type-assertion'
 import { Button } from '@/components/ui/button'
 
@@ -171,7 +172,6 @@ export function ToolPart({ part }: ToolPartProps) {
 }
 
 export function TaskToolPart({ part }: { part: ITaskToolPart }) {
-
   const childSessionTask =
     (part.state.status === 'completed' || part.state.status === 'running') &&
     (part.state.metadata?.sessionId ||
@@ -179,7 +179,7 @@ export function TaskToolPart({ part }: { part: ITaskToolPart }) {
 
   return (
     <div className="relative">
-      {childSessionTask  ? (
+      {childSessionTask ? (
         <Button
           variant={'ghost'}
           className="absolute top-0 right-0 -translate-y-full"

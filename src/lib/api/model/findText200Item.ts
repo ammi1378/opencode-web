@@ -14,5 +14,5 @@ export type FindText200Item = {
   lines: FindText200ItemLines
   line_number: number
   absolute_offset: number
-  submatches: Array<FindText200ItemSubmatchesItem>
+  submatches: FindText200ItemSubmatchesItem[]
 }

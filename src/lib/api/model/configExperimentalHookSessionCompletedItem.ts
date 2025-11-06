@@ -8,6 +8,6 @@
 import type { ConfigExperimentalHookSessionCompletedItemEnvironment } from './configExperimentalHookSessionCompletedItemEnvironment'
 
 export type ConfigExperimentalHookSessionCompletedItem = {
-  command: Array<string>
+  command: string[]
   environment?: ConfigExperimentalHookSessionCompletedItemEnvironment
 }

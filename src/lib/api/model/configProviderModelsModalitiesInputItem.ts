@@ -9,7 +9,7 @@
 export type ConfigProviderModelsModalitiesInputItem =
   (typeof ConfigProviderModelsModalitiesInputItem)[keyof typeof ConfigProviderModelsModalitiesInputItem]
 
- 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ConfigProviderModelsModalitiesInputItem = {
   text: 'text',
   audio: 'audio',

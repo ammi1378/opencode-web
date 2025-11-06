@@ -8,6 +8,5 @@
 
 export type FindSymbolsParams = {
   directory?: string
-  directory?: string
   query: string
 }

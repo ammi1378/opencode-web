@@ -8,6 +8,5 @@
 
 export type FileReadParams = {
   directory?: string
-  directory?: string
   path: string
 }

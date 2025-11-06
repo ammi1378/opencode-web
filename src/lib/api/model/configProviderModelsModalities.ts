@@ -9,6 +9,6 @@ import type { ConfigProviderModelsModalitiesInputItem } from './configProviderMo
 import type { ConfigProviderModelsModalitiesOutputItem } from './configProviderModelsModalitiesOutputItem'
 
 export type ConfigProviderModelsModalities = {
-  input: Array<ConfigProviderModelsModalitiesInputItem>
-  output: Array<ConfigProviderModelsModalitiesOutputItem>
+  input: ConfigProviderModelsModalitiesInputItem[]
+  output: ConfigProviderModelsModalitiesOutputItem[]
 }

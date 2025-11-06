@@ -7,4 +7,4 @@
  */
 import type { ToolListItem } from './toolListItem'
 
-export type ToolList = Array<ToolListItem>
+export type ToolList = ToolListItem[]

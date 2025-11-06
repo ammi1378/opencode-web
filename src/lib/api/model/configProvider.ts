@@ -15,7 +15,7 @@ export type ConfigProvider = {
   [key: string]: {
     api?: string
     name?: string
-    env?: Array<string>
+    env?: string[]
     id?: string
     npm?: string
     models?: ConfigProviderModels

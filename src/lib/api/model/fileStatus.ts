@@ -8,7 +8,7 @@
 
 export type FileStatus = (typeof FileStatus)[keyof typeof FileStatus]
 
- 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const FileStatus = {
   added: 'added',
   deleted: 'deleted',

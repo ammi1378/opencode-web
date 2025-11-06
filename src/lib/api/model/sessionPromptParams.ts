@@ -8,6 +8,4 @@
 
 export type SessionPromptParams = {
   directory?: string
-  directory?: string
-  directory?: string
 }

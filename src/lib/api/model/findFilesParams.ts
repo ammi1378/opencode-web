@@ -8,6 +8,6 @@
 
 export type FindFilesParams = {
   directory?: string
-  directory?: string
   query: string
+  dirs?: 'true' | 'false'
 }

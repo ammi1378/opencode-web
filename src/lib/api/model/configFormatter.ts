@@ -10,8 +10,8 @@ import type { ConfigFormatterEnvironment } from './configFormatterEnvironment'
 export type ConfigFormatter = {
   [key: string]: {
     disabled?: boolean
-    command?: Array<string>
+    command?: string[]
     environment?: ConfigFormatterEnvironment
-    extensions?: Array<string>
+    extensions?: string[]
   }
 }

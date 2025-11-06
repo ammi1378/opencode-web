@@ -8,6 +8,5 @@
 
 export type FileListParams = {
   directory?: string
-  directory?: string
   path: string
 }

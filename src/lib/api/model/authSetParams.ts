@@ -8,6 +8,4 @@
 
 export type AuthSetParams = {
   directory?: string
-  directory?: string
-  directory?: string
 }

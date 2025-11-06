@@ -8,5 +8,4 @@
 
 export type AppLogParams = {
   directory?: string
-  directory?: string
 }

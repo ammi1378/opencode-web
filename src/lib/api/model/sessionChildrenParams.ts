@@ -8,5 +8,4 @@
 
 export type SessionChildrenParams = {
   directory?: string
-  directory?: string
 }

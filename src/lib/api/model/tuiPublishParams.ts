@@ -8,5 +8,4 @@
 
 export type TuiPublishParams = {
   directory?: string
-  directory?: string
 }

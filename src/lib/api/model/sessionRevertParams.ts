@@ -8,6 +8,4 @@
 
 export type SessionRevertParams = {
   directory?: string
-  directory?: string
-  directory?: string
 }

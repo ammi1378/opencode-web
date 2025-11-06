@@ -8,7 +8,7 @@
 
 export type ModelStatus = (typeof ModelStatus)[keyof typeof ModelStatus]
 
- 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ModelStatus = {
   alpha: 'alpha',
   beta: 'beta',

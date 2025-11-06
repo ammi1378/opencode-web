@@ -6,4 +6,4 @@
  * OpenAPI spec version: 0.0.3
  */
 
-export type PermissionPattern = string | Array<string>
+export type PermissionPattern = string | string[]

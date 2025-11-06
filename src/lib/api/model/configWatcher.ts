@@ -7,5 +7,5 @@
  */
 
 export type ConfigWatcher = {
-  ignore?: Array<string>
+  ignore?: string[]
 }

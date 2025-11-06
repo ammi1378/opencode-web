@@ -8,5 +8,4 @@
 
 export type TuiAppendPromptParams = {
   directory?: string
-  directory?: string
 }

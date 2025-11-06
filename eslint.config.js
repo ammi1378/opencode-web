@@ -9,7 +9,7 @@ export default [
       '@typescript-eslint/no-unnecessary-condition': 'off',
       '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
-      '@typescript-eslint/naming-convention': 'warn'
+      '@typescript-eslint/naming-convention': 'warn',
     },
   },
 ]

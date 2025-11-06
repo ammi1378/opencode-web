@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from 'react'
 
 export function useThrottle(value: any, interval = 500) {
   const [throttledValue, setThrottledValue] = useState(value)

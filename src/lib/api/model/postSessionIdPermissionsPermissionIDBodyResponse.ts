@@ -9,7 +9,7 @@
 export type PostSessionIdPermissionsPermissionIDBodyResponse =
   (typeof PostSessionIdPermissionsPermissionIDBodyResponse)[keyof typeof PostSessionIdPermissionsPermissionIDBodyResponse]
 
- 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const PostSessionIdPermissionsPermissionIDBodyResponse = {
   once: 'once',
   always: 'always',

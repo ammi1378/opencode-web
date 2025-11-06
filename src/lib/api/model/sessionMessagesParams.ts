@@ -8,5 +8,4 @@
 
 export type SessionMessagesParams = {
   directory?: string
-  directory?: string
 }

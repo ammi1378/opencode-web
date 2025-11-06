@@ -9,8 +9,8 @@ import type { ConfigLspAnyOfTwoEnv } from './configLspAnyOfTwoEnv'
 import type { ConfigLspAnyOfTwoInitialization } from './configLspAnyOfTwoInitialization'
 
 export type ConfigLspAnyOfTwo = {
-  command: Array<string>
-  extensions?: Array<string>
+  command: string[]
+  extensions?: string[]
   disabled?: boolean
   env?: ConfigLspAnyOfTwoEnv
   initialization?: ConfigLspAnyOfTwoInitialization

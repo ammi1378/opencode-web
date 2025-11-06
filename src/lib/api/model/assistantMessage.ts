@@ -16,7 +16,7 @@ export interface AssistantMessage {
   role: 'assistant'
   time: AssistantMessageTime
   error?: AssistantMessageError
-  system: Array<string>
+  system: string[]
   parentID: string
   modelID: string
   providerID: string

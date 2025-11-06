@@ -17,5 +17,5 @@ export interface ToolStateCompleted {
   title: string
   metadata: ToolStateCompletedMetadata
   time: ToolStateCompletedTime
-  attachments?: Array<FilePart>
+  attachments?: FilePart[]
 }

@@ -8,5 +8,4 @@
 
 export type TuiControlResponseParams = {
   directory?: string
-  directory?: string
 }

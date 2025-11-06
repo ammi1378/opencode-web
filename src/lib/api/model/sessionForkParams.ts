@@ -8,6 +8,4 @@
 
 export type SessionForkParams = {
   directory?: string
-  directory?: string
-  directory?: string
 }

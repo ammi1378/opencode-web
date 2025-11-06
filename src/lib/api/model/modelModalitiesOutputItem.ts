@@ -9,7 +9,7 @@
 export type ModelModalitiesOutputItem =
   (typeof ModelModalitiesOutputItem)[keyof typeof ModelModalitiesOutputItem]
 
- 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ModelModalitiesOutputItem = {
   text: 'text',
   audio: 'audio',

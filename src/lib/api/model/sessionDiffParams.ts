@@ -8,8 +8,6 @@
 
 export type SessionDiffParams = {
   directory?: string
-  directory?: string
-  directory?: string
   /**
    * @pattern ^msg.*
    */

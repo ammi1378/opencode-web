@@ -6,4 +6,4 @@
  * OpenAPI spec version: 0.0.3
  */
 
-export type ToolIDs = Array<string>
+export type ToolIDs = string[]

@@ -41,7 +41,7 @@ export function useSSEStream<T = any>({
   const eventSourceRef = useRef<EventSource | null>(null)
   const [isConnected, setIsConnected] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const queryKey = getEventSubscribeQueryKey({ })
+  const queryKey = getEventSubscribeQueryKey({})
 
   const { data = [] } = useQuery<Array<Event>>({
     queryKey,
@@ -125,7 +125,6 @@ export function useSSEStream<T = any>({
       logger('[OC_STATE]: Batch updates recieved!')
       const updateQueue = data
 
-
       logger({ updateQueue, data })
 
       if (updateQueue.length >= batchSize) {
@@ -171,7 +170,6 @@ export function useSSEStream<T = any>({
             },
           )
         } else if (ocEvent.type === 'message.part.updated') {
-
           queryClient.setQueryData(
             getSessionMessagesQueryKey(ocEvent.properties.part.sessionID, {}),
             (val: Array<SessionMessages200Item> | undefined) => {
@@ -186,6 +184,9 @@ export function useSSEStream<T = any>({
               }
             },
           )
+        } else if (ocEvent.type === 'session.created') {
+            // console.log({});
+            
         }
       })
 

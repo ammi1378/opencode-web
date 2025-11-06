@@ -10,6 +10,6 @@ import type { BadRequestErrorErrorsItem } from './badRequestErrorErrorsItem'
 
 export interface BadRequestError {
   data: BadRequestErrorData
-  errors: Array<BadRequestErrorErrorsItem>
+  errors: BadRequestErrorErrorsItem[]
   success: false
 }

@@ -1,8 +1,9 @@
 import Axios from 'axios'
-import type {AxiosRequestConfig} from 'axios';
+import type { AxiosRequestConfig } from 'axios'
 
 export const AXIOS_INSTANCE = Axios.create({
   timeout: 30000,
+  baseURL: 'http://0.0.0.0:56050',
 })
 
 export const customInstance = <T>(
@@ -14,11 +15,7 @@ export const customInstance = <T>(
   const mergedConfig = {
     ...config,
     ...options,
-    baseURL:
-      options?.baseUrl ||
-      options?.baseURL ||
-      config.baseURL ||
-      AXIOS_INSTANCE.defaults.baseURL,
+    baseURL: AXIOS_INSTANCE.defaults.baseURL,
     cancelToken: source.token,
   }
 

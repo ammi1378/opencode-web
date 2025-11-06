@@ -8,6 +8,4 @@
 
 export type SessionShellParams = {
   directory?: string
-  directory?: string
-  directory?: string
 }
