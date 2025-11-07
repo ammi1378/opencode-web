@@ -13,6 +13,7 @@ import {
   upsertMessage,
   upsertSession,
 } from '@/lib/update-center'
+import { useSessionStore } from '@/integrations/zustand/session'
 
 interface UseSSEStreamOptions {
   directory?: string
@@ -43,6 +44,10 @@ export function useSSEStream<T = any>({
   maxItems = 100,
   enabled = true,
 }: UseSSEStreamOptions): UseSSEStreamReturn {
+  const updateSessionStatus = useSessionStore(
+    (state) => state.updateSessionStatus,
+  )
+
   const queryClient = useQueryClient()
   const eventSourceRef = useRef<EventSource | null>(null)
   const [isConnected, setIsConnected] = useState(false)
@@ -161,7 +166,12 @@ export function useSSEStream<T = any>({
       // const events = updateQueue.current
       logger('[OC_STATE]: Updates started!')
       events.forEach((ocEvent) => {
+        // updateSession
+        let updatingSessionId: string | undefined = undefined
         if (ocEvent.type === 'message.updated') {
+          if (ocEvent.properties.info.role === 'assistant') {
+            updatingSessionId = ocEvent.properties.info.sessionID
+          }
           queryClient.setQueryData(
             getSessionMessagesQueryKey(ocEvent.properties.info.sessionID, {}),
             (val: Array<SessionMessages200Item> | undefined) => {
@@ -176,6 +186,7 @@ export function useSSEStream<T = any>({
             },
           )
         } else if (ocEvent.type === 'message.part.updated') {
+          // updatingSessionId = ocEvent.properties.part.sessionID
           queryClient.setQueryData(
             getSessionMessagesQueryKey(ocEvent.properties.part.sessionID, {}),
             (val: Array<SessionMessages200Item> | undefined) => {
@@ -190,7 +201,11 @@ export function useSSEStream<T = any>({
               }
             },
           )
-        }  else if (ocEvent.type === 'session.updated' || ocEvent.type === 'session.created' ) {
+        } else if (
+          ocEvent.type === 'session.updated' ||
+          ocEvent.type === 'session.created'
+        ) {
+          // updatingSessionId = ocEvent.properties.info.id
           queryClient.setQueryData(
             getSessionListQueryKey({}),
             (val: Session[] | undefined) => {
@@ -203,14 +218,24 @@ export function useSSEStream<T = any>({
             },
           )
           getSessionListQueryOptions({})
-          console.log('session.updated', ocEvent)
+        } else if (ocEvent.type === 'session.idle') {
+          updateSessionStatus(ocEvent.properties.sessionID, 'idle')
+        } else if (
+          ocEvent.type === 'session.error' &&
+          ocEvent.properties?.sessionID
+        ) {
+          updateSessionStatus(ocEvent.properties.sessionID, 'error')
+        }
+
+        if (updatingSessionId) {
+          updateSessionStatus(updatingSessionId, 'updating')
         }
       })
 
       logger('[OC_STATE]: Updates cleared!')
       clear(onholdEvents)
     },
-    [queryClient, clear],
+    [queryClient, clear, updateSessionStatus],
   )
 
   return {

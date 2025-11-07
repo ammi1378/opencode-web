@@ -44,11 +44,15 @@ import {
 } from '@/lib/api/default/default'
 import { SessionContext } from '@/hooks/context/session-context'
 import { cn } from '@/lib/utils'
+import { useSessionStore } from '@/integrations/zustand/session'
 
 type Mention = { id: string; name: string; description?: string }
 
 export const SessionChatInput = ({ sessionId }: { sessionId?: string }) => {
   const editorRef = useRef<ChatInputEditorRef>(null)
+  const updateSessionStatus = useSessionStore(
+    (state) => state.updateSessionStatus,
+  )
   const { context: sessionContext, updateContext } = useContext(SessionContext)
   const { data: session } = useSessionGet(
     sessionId!,
@@ -144,7 +148,6 @@ export const SessionChatInput = ({ sessionId }: { sessionId?: string }) => {
     [mutateCreateSessionAsync, mutateAsync, sessionContext, navigate],
   )
 
-
   const submitMessage = useCallback(() => {
     const message = editorRef?.current?.editor?.getText()
 
@@ -152,6 +155,7 @@ export const SessionChatInput = ({ sessionId }: { sessionId?: string }) => {
       createNewChat(message)
     }
     if (!message?.length || !session) return
+    updateSessionStatus(session.id, 'updating')
     mutate({
       data: {
         parts: [{ type: 'text', text: message, synthetic: false }],
@@ -165,7 +169,7 @@ export const SessionChatInput = ({ sessionId }: { sessionId?: string }) => {
       params: { directory: session.directory },
     })
     clear()
-  }, [session, clear, sessionContext])
+  }, [session, clear, sessionContext, updateSessionStatus])
 
   const [open, setOpen] = useState(false)
   const selectedModel = sessionContext?.providers

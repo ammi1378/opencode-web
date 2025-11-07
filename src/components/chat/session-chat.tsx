@@ -21,11 +21,14 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import { SessionContext } from '@/hooks/context/session-context'
+import { useSessionStore } from '@/integrations/zustand/session'
+import { Item, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item'
+import { Spinner } from '@/components/ui/spinner'
 
 const SCROLL_UP_THRESHOLD = 20
 
 interface SessionChatProps {
-  sessionId?: string
+  sessionId: string
   defaultOpen?: boolean
   hideAccordionUi?: boolean
 }
@@ -57,6 +60,7 @@ export function SessionChat({
       },
     },
   )
+  const sessionStatus = useSessionStore((state) => state.sessions[sessionId!])
 
   const localUpdateContext = useCallback(
     (v: ISessionContext['context']) => {
@@ -298,6 +302,18 @@ export function SessionChat({
                       />
                     )
                   })}
+                  {sessionStatus?.status === 'updating' && (
+                    <Item className="animate-pulse" variant="default">
+                      <ItemMedia>
+                        <Spinner />
+                      </ItemMedia>
+                      <ItemContent>
+                        <ItemTitle>
+                          [{sessionContext?.mode}] Generating...
+                        </ItemTitle>
+                      </ItemContent>
+                    </Item>
+                  )}
                 </div>
               )}
             </AccordionContent>

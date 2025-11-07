@@ -21,7 +21,7 @@ export const Route = createFileRoute('/chat/$sessionId')({
 
 function SessionChatPage() {
   const { sessionId } = Route.useParams()
-
+  
 
   const { data: config } = useConfigGet({})
   const { data: providersData } = useConfigProviders({})
